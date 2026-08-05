@@ -95,15 +95,43 @@ yolo detect train model=yolov8l.pt data=configs/chvg5.yaml imgsz=640 seed=42
 
 The training member chooses epochs, batch size and online augmentation settings based on the assigned experiment and GPU memory.
 
-## Optional offline noise experiment
+## Offline noise experiment
 
-Do not run this for the baseline dataset. If the experiment explicitly needs fixed photometric noise, copy the processed dataset first, then run the command only on that experimental copy:
+Keep `chvg5` unchanged as the baseline. Copy the processed dataset to `chvg5_noise_experiment`, then run the command only on the experimental copy:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\data\augment_train.py `
   --dataset data\processed\chvg5_noise_experiment `
   --fraction 0.25 `
-  --seed 42
+  --seed 42 `
+  --report-dir reports\generated\chvg_noise
 ```
 
-The augmentation script changes train images only. It does not edit validation or test data.
+The script creates 340 additional train images from the supplied 1,358-image train split. It assigns Gaussian noise, blur, low light and low contrast evenly across the selected images. These pixel-level effects do not change geometry, so each new image receives an exact copy of its source YOLO label. Validation and test remain unchanged.
+
+The reports are:
+
+```text
+reports/generated/chvg_noise/augmentation_manifest.csv
+reports/generated/chvg_noise/augmentation_summary.json
+reports/generated/chvg_noise/previews/
+```
+
+Verified result for seed 42:
+
+| Metric | Result |
+|---|---:|
+| Original train images | 1,358 |
+| Added train images | 340 |
+| Train images after augmentation | 1,698 |
+| Validation images | 170 |
+| Test images | 170 |
+| Added images per effect | 85 |
+| Added bounding boxes | 2,206 |
+| Validation errors | 0 |
+
+Run the reproducible Windows workflow with:
+
+```powershell
+.\run_add_noise_chvg.ps1
+```

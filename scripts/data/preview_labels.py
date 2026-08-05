@@ -18,12 +18,19 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--split", choices=("train", "val", "test"), default="train")
     parser.add_argument("--output", type=Path, default=Path("reports/generated/label_preview"))
+    parser.add_argument(
+        "--stem-contains",
+        default="",
+        help="Only preview images whose filename stem contains this text",
+    )
     args = parser.parse_args()
     config = yaml.safe_load(args.yaml.read_text(encoding="utf-8"))
     names = config["names"]
     names = [names[k] for k in sorted(names, key=lambda x: int(x))] if isinstance(names, dict) else names
     root = (args.yaml.parent / config["path"]).resolve()
     images = list((root / "images" / args.split).glob("*"))
+    if args.stem_contains:
+        images = [image for image in images if args.stem_contains in image.stem]
     if not images:
         raise FileNotFoundError(f"No {args.split} images found under {root / 'images' / args.split}")
     random.Random(args.seed).shuffle(images)
