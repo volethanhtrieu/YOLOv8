@@ -1,0 +1,13 @@
+shel5k:
+  person: person
+  person_with_helmet: person
+  person_no_helmet: person
+  head: head
+  head_with_helmet: head
+  helmet: helmet
+  face: null
+
+target_classes:
+  person: 0
+  head: 1
+  helmet: 2

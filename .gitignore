@@ -51,3 +51,7 @@ Desktop.ini
 # Editors
 .vscode/
 .idea/
+
+# Local dataset inspection outputs
+reports/shel5k_samples/
+reports/shel5k_aug_samples/
