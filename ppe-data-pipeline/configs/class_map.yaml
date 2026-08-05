@@ -1,0 +1,26 @@
+target_names:
+  0: person
+  1: head
+  2: helmet
+  3: vest
+  4: glass
+
+chvg:
+  person: person
+  head: head
+  red: helmet
+  yellow: helmet
+  blue: helmet
+  white: helmet
+  vest: vest
+  glass: glass
+
+shel5k:
+  helmet: helmet
+  head: head
+  head_with_helmet: head
+  person_with_helmet: person
+  person_no_helmet: person
+  person_without_helmet: person
+  face: null
+

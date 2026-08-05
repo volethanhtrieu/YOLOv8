@@ -6,11 +6,9 @@ __pycache__/
 data/raw/*
 data/interim/*
 data/processed/*
-data/quarantine/*
 !data/raw/.gitkeep
 !data/interim/.gitkeep
 !data/processed/.gitkeep
-!data/quarantine/.gitkeep
 
 *.zip
 *.rar
@@ -21,7 +19,4 @@ data/quarantine/*
 runs/
 reports/generated/*
 !reports/generated/.gitkeep
-!reports/generated/chvg/
-reports/generated/chvg/*
-!reports/generated/chvg/*.csv
-!reports/generated/chvg/*.json
+

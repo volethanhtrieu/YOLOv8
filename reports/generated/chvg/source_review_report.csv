@@ -1,0 +1,2 @@
+﻿file,issue_type,severity,detail,action
+data/interim/chvg_source/train/labels/ppe_0169_jpg.rf.b000db7222785716b708aa7a130f0f93.txt,empty_or_unusable_label,review,No usable bounding boxes,quarantine
