@@ -19,9 +19,25 @@ data/quarantine/*
 *.pth
 *.onnx
 runs/
+outputs/
+artifacts/
+wandb/
+
 reports/generated/*
 !reports/generated/.gitkeep
 !reports/generated/chvg/
 reports/generated/chvg/*
 !reports/generated/chvg/*.csv
 !reports/generated/chvg/*.json
+
+# Logs and cache
+*.log
+.cache/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
