@@ -1,0 +1,53 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environment and secrets
+.env
+.env.*
+*.key
+
+# Raw and generated datasets
+data/raw/*
+data/interim/*
+data/processed/*
+
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# Downloaded archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# Model checkpoints and exports
+*.pt
+*.pth
+*.onnx
+*.engine
+*.torchscript
+
+# Training outputs
+runs/
+outputs/
+artifacts/
+wandb/
+
+# Logs and cache
+*.log
+.cache/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
