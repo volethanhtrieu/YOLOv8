@@ -51,3 +51,5 @@ Desktop.ini
 # Editors
 .vscode/
 .idea/
+# Variant C local test assets
+assets/
