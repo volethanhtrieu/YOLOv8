@@ -28,7 +28,6 @@ data/processed/*
 *.gz
 
 # Model checkpoints and exports
-*.pt
 *.pth
 *.onnx
 *.engine
@@ -52,4 +51,7 @@ Desktop.ini
 .vscode/
 .idea/
 # Variant C local test assets
-assets/
+
+# Local test videos - keep folder only
+assets/*
+!assets/.gitkeep
