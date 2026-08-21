@@ -1,0 +1,10 @@
+[server]
+address = "127.0.0.1"
+port = 8501
+maxUploadSize = 2048
+runOnSave = false
+
+[browser]
+serverAddress = "127.0.0.1"
+serverPort = 8501
+gatherUsageStats = false

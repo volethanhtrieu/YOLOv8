@@ -1,0 +1,51 @@
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Local IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Runtime inputs, outputs, logs, and generated evidence
+inputs/
+videos/
+outputs/
+*.log
+
+# Large model artifacts must be distributed separately
+weights/**/*.pt
+weights/**/*.onnx
+weights/**/*.engine
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Generated annotation exchange files and machine-specific manifests
+annotations/**/*.zip
+annotations/**/*.manifest.json
+annotations/**/*.merge_report.json
+
+# Local recovery snapshots and superseded implementations
+dashboard_before_stats_fix.py
+fix_dashboard_stats_v2.py
+event_engine_v1.py
+run_pipeline.py
+run_tiled_ppe_pipeline.py
+run_tiled_ppe_pipeline_v2.py
+inject_test_*.py
+test_human_review_v1.py
+test_human_review_v2.py
+test_job_api.py
+test_job_api_v2.py
+README_HUMAN_REVIEW*.txt
+ONE_COMMAND_PIPELINE.txt
+LIVE_PROGRESS_FIX.txt

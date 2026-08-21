@@ -1,0 +1,20 @@
+metric,unit,A_detection_only,B_bytetrack,C_event_engine,interpretation,scope
+merged_detection_rows,rows,39953,39953,39953,All stages derive from the same merged YOLO detection cache,exact parity
+identity_semantics,text,unique detection per frame,persistent predicted person track,persistent event per track,A identity is not a real person identity,definition
+person_observation_rows,rows,15880,9609,9609,ByteTrack outputs active person track observations rather than every raw person detection,internal proxy
+unique_predicted_ids,ids,15880,226,226,The value 226 is predicted IDs and must not be reported as the number of real people,internal proxy
+mean_observations_per_id,frames,1.0,42.5177,42.5177,Tracking provides temporal history for Association and Event Engine,internal proxy
+median_observations_per_id,frames,1.0,22.0,22.0,Median temporal support per predicted ByteTrack identity,internal proxy
+short_ids_le_5,count,15880,49,49,Short IDs may indicate brief visibility filtering or fragmentation but require ground truth to interpret,internal proxy
+short_id_ratio_le_5,ratio,1.0,0.2168,0.2168,Every detection-only identity exists for one frame,internal proxy
+tracks_with_internal_gap,count,0,187,187,Gap is an internal behavior proxy and is not true fragmentation without ground truth,internal proxy
+recovered_gap_episodes,count,0,1513,1513,Repeated observation after an internal gap using the same predicted ID,internal proxy
+longest_internal_gap,frames,0,61,61,Must not be interpreted as successful recovery accuracy without ground truth,internal proxy
+frame_candidate_rows,rows,424,384,66,Event Engine consumes temporal evidence rather than independent frame alerts,internal proxy
+opened_events,events,N/A,N/A,1,One event was opened after temporal aggregation,observed output
+confirmed_events,events,N/A,N/A,0,No event reached confirmed state in this run,observed output
+suspected_events,events,N/A,N/A,1,The opened event remained suspected,observed output
+candidate_to_event_reduction,percent,N/A,N/A,98.48,Reduction from 66 temporal evidence rows to one opened event,internal aggregation metric
+cache_replay_processing_fps,FPS,11.4218,12.7492,N/A,Replay FPS excludes YOLO inference and is not end-to-end realtime performance,cache replay only
+source_end_to_end_processing_fps,FPS,N/A,0.1487,N/A,Full YOLO tiled inference plus tracking on CPU,observed runtime
+ground_truth_metrics_available,boolean,false,false,false,IDF1 MOTA HOTA ID switches event recall and false alarms per hour are unavailable,limitation
