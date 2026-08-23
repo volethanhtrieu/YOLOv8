@@ -718,10 +718,17 @@ class VideoJobManager:
                 )
             ),
             "association_counts": (
-                tracking.get(
-                    "association_counts",
-                    {},
-                )
+                {
+                    class_name: tracking.get(
+                        "association_counts",
+                        {},
+                    ).get(class_name, 0)
+                    for class_name in (
+                        "head",
+                        "helmet",
+                        "vest",
+                    )
+                }
             ),
             "events": (
                 events.get(

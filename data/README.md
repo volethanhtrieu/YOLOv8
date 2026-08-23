@@ -19,5 +19,15 @@ data/raw/shel5k/
 data/interim/
 data/processed/
 
-Dataset preparation scripts are stored in scripts/data/.
-Dataset source information and checksums are stored in data/manifests/.
+Final runtime schema:
+
+- `0 person`
+- `1 head`
+- `2 helmet`
+- `3 vest`
+
+`glass` is removed during conversion and is not a runtime class.
+
+Dataset conversion and validation scripts are stored in `scripts/data/`.
+Training is refused unless `validation_report.json` is present and has status
+`PASS`. Dataset source information and checksums belong in `data/manifests/`.

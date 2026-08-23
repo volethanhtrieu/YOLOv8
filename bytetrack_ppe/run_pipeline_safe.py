@@ -19,7 +19,7 @@ DEFAULT_MODEL = (
     ROOT
     / "weights"
     / "candidates"
-    / "SEQ-C-N2-best.pt"
+    / "CHVG4-best.pt"
 )
 
 DEFAULT_TRACKER = (

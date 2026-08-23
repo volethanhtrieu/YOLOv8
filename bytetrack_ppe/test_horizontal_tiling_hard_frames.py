@@ -12,7 +12,7 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parent
 
-MODEL_PATH = ROOT / "weights" / "candidates" / "SEQ-C-N2-best.pt"
+MODEL_PATH = ROOT / "weights" / "candidates" / "CHVG4-best.pt"
 VIDEO_PATH = ROOT / "videos" / "test.mp4"
 
 DIAGNOSTIC_CANDIDATES = [

@@ -18,7 +18,7 @@ MODEL_PATH = (
     PROJECT_DIR
     / "weights"
     / "candidates"
-    / "SEQ-C-N2-best.pt"
+    / "CHVG4-best.pt"
 )
 VIDEO_PATH = PROJECT_DIR / "videos" / "test.mp4"
 TRACKER_PATH = PROJECT_DIR / "configs" / "bytetrack_ppe.yaml"

@@ -17,7 +17,7 @@ REQUIRED_FILES = {
     "detector": ROOT / "run_tiled_ppe_pipeline_v3.py",
     "event engine": ROOT / "event_engine_v2.py",
     "tracker config": ROOT / "configs" / "bytetrack_ppe.yaml",
-    "default model": ROOT / "weights" / "candidates" / "SEQ-C-N2-best.pt",
+    "default model": ROOT / "weights" / "candidates" / "CHVG4-best.pt",
 }
 
 REQUIRED_MODULES = {
@@ -97,6 +97,32 @@ def main() -> int:
             }
             failures.append(f"Cannot import {module_name}: {exc}")
     report["packages"] = package_report
+
+    model_path = REQUIRED_FILES["default model"]
+    if model_path.is_file():
+        try:
+            from ultralytics import YOLO
+
+            names = YOLO(str(model_path)).names
+            actual_names = (
+                tuple(names[class_id] for class_id in sorted(names))
+                if isinstance(names, dict)
+                else tuple(names)
+            )
+            expected_names = ("person", "head", "helmet", "vest")
+            report["model_schema"] = {
+                "expected": list(expected_names),
+                "actual": list(actual_names),
+                "valid": actual_names == expected_names,
+            }
+            if actual_names != expected_names:
+                failures.append(
+                    "Default checkpoint must use exactly the four-class schema "
+                    f"{expected_names}; got {actual_names}."
+                )
+        except Exception as exc:
+            report["model_schema"] = {"error": str(exc)}
+            failures.append(f"Cannot inspect default checkpoint schema: {exc}")
 
     try:
         import imageio_ffmpeg

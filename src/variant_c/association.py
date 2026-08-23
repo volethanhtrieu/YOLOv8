@@ -101,7 +101,7 @@ def association_region(
     matched_head: Optional[BBox] = None,
 ) -> BBox:
 
-    if class_name in {"helmet", "glass"}:
+    if class_name == "helmet":
         if matched_head is not None:
             return expand_box(matched_head)
 
@@ -245,13 +245,6 @@ def associate_ppe(
         heads,
     )
 
-    glasses = match_class(
-        persons,
-        detections,
-        "glass",
-        heads,
-    )
-
     output = []
 
     for person in persons:
@@ -267,12 +260,10 @@ def associate_ppe(
                 "head": heads.get(tid),
                 "helmet": helmets.get(tid),
                 "vest": vests.get(tid),
-                "glass": glasses.get(tid),
 
                 "has_head": tid in heads,
                 "has_helmet": tid in helmets,
                 "has_vest": tid in vests,
-                "has_glass": tid in glasses,
             }
         )
 

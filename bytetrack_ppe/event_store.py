@@ -11,6 +11,23 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 
+LEGACY_GLASS_FIELDS = {
+    "glass",
+    "glass_conf",
+    "glass_detections",
+    "has_glass",
+}
+
+
+def _without_legacy_glass(raw: dict[str, Any]) -> dict[str, Any]:
+    """Read old artifacts without exposing retired glass fields through V3."""
+
+    return {
+        key: value
+        for key, value in raw.items()
+        if key not in LEGACY_GLASS_FIELDS
+    }
+
 
 @dataclass(frozen=True)
 class StorePaths:
@@ -316,7 +333,7 @@ class EventStore:
 
                 rows.append(
                     {
-                        **raw,
+                        **_without_legacy_glass(raw),
                         "track_id": track_id,
                         "frame_index": frame_index,
                         "timestamp_s": timestamp_s,
@@ -419,7 +436,7 @@ class EventStore:
 
                 rows.append(
                     {
-                        **raw,
+                        **_without_legacy_glass(raw),
                         "track_id": track_id,
                         "frame_index": frame_index,
                         "timestamp_s": timestamp_s,
@@ -446,9 +463,6 @@ class EventStore:
                         ),
                         "vest_conf": _optional_float(
                             raw.get("vest_conf")
-                        ),
-                        "glass_conf": _optional_float(
-                            raw.get("glass_conf")
                         ),
                     }
                 )
@@ -827,11 +841,6 @@ class EventStore:
             ),
             "vest": sum(
                 row["vest_conf"]
-                is not None
-                for row in rows
-            ),
-            "glass": sum(
-                row["glass_conf"]
                 is not None
                 for row in rows
             ),

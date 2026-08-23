@@ -16,7 +16,7 @@ from ultralytics.utils import YAML, IterableSimpleNamespace
 
 ROOT = Path(__file__).resolve().parent
 
-MODEL_PATH = ROOT / "weights" / "candidates" / "SEQ-C-N2-best.pt"
+MODEL_PATH = ROOT / "weights" / "candidates" / "CHVG4-best.pt"
 VIDEO_PATH = ROOT / "videos" / "test.mp4"
 TRACKER_PATH = ROOT / "configs" / "bytetrack_ppe.yaml"
 
@@ -52,21 +52,18 @@ PERSON_CLASS_ID = 0
 HEAD_CLASS_ID = 1
 HELMET_CLASS_ID = 2
 VEST_CLASS_ID = 3
-GLASS_CLASS_ID = 4
 
 CLASS_NAMES_EXPECTED = {
     PERSON_CLASS_ID: "person",
     HEAD_CLASS_ID: "head",
     HELMET_CLASS_ID: "helmet",
     VEST_CLASS_ID: "vest",
-    GLASS_CLASS_ID: "glass",
 }
 
 PPE_CLASS_IDS = [
     HEAD_CLASS_ID,
     HELMET_CLASS_ID,
     VEST_CLASS_ID,
-    GLASS_CLASS_ID,
 ]
 
 
@@ -1143,7 +1140,6 @@ def candidate_score(
     if class_id in {
         HEAD_CLASS_ID,
         HELMET_CLASS_ID,
-        GLASS_CLASS_ID,
     }:
         if not (
             -0.10 <= rel_x <= 1.10
@@ -1153,10 +1149,7 @@ def candidate_score(
 
         anchor_x = 0.50
 
-        if class_id == GLASS_CLASS_ID:
-            anchor_y = 0.18
-        else:
-            anchor_y = 0.16
+        anchor_y = 0.16
 
         max_distance = 0.65
 
@@ -1208,7 +1201,6 @@ def associate_ppe(
             HEAD_CLASS_ID: None,
             HELMET_CLASS_ID: None,
             VEST_CLASS_ID: None,
-            GLASS_CLASS_ID: None,
         }
 
     if (
@@ -1453,6 +1445,24 @@ def main():
         "Model classes:",
         model.names,
     )
+
+    actual_names = (
+        tuple(
+            model.names[class_id]
+            for class_id in sorted(model.names)
+        )
+        if isinstance(model.names, dict)
+        else tuple(model.names)
+    )
+    expected_names = tuple(
+        CLASS_NAMES_EXPECTED.values()
+    )
+
+    if actual_names != expected_names:
+        raise RuntimeError(
+            "Checkpoint must use exactly the four-class schema "
+            f"{expected_names}; got {actual_names}"
+        )
 
     for class_id, name in (
         CLASS_NAMES_EXPECTED.items()
@@ -1714,7 +1724,6 @@ def main():
         HEAD_CLASS_ID: 0,
         HELMET_CLASS_ID: 0,
         VEST_CLASS_ID: 0,
-        GLASS_CLASS_ID: 0,
     }
 
     unique_track_ids = set()
@@ -1900,11 +1909,6 @@ def main():
                     0,
                     255,
                 ),
-                GLASS_CLASS_ID: (
-                    255,
-                    255,
-                    0,
-                ),
             }
 
             for row in detections:
@@ -1965,11 +1969,6 @@ def main():
                     VEST_CLASS_ID,
                 )
 
-                glass_conf = conf_or_none(
-                    assoc,
-                    GLASS_CLASS_ID,
-                )
-
                 for class_id in PPE_CLASS_IDS:
                     if (
                         assoc[
@@ -1995,8 +1994,7 @@ def main():
                     f"P:{person_conf:.2f} "
                     f"Head:{format_conf(head_conf)} "
                     f"Helmet:{format_conf(helmet_conf)} "
-                    f"Vest:{format_conf(vest_conf)} "
-                    f"Glass:{format_conf(glass_conf)}"
+                    f"Vest:{format_conf(vest_conf)}"
                 )
 
                 draw_box(
@@ -2055,12 +2053,6 @@ def main():
                             is None
                             else vest_conf
                         ),
-                        "glass_conf": (
-                            ""
-                            if glass_conf
-                            is None
-                            else glass_conf
-                        ),
                     }
                 )
 
@@ -2106,11 +2098,6 @@ def main():
                     "vest_detections": (
                         class_counts[
                             VEST_CLASS_ID
-                        ]
-                    ),
-                    "glass_detections": (
-                        class_counts[
-                            GLASS_CLASS_ID
                         ]
                     ),
                     "active_tracks": (
@@ -2220,7 +2207,6 @@ def main():
             "head_conf",
             "helmet_conf",
             "vest_conf",
-            "glass_conf",
         ]
 
         writer_csv = (
@@ -2264,7 +2250,6 @@ def main():
             "head_detections",
             "helmet_detections",
             "vest_detections",
-            "glass_detections",
             "active_tracks",
             "lost_tracks",
             "raw_tile_detections",
@@ -2444,11 +2429,6 @@ def main():
             "vest": (
                 total_associated[
                     VEST_CLASS_ID
-                ]
-            ),
-            "glass": (
-                total_associated[
-                    GLASS_CLASS_ID
                 ]
             ),
         },

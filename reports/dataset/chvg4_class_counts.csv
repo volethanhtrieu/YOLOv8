@@ -1,0 +1,7 @@
+class_id,class_name,source_boxes,target_boxes,change
+0,person,4674,4674,0
+1,head,730,730,0
+2,helmet,3531,3531,0
+3,vest,2137,2137,0
+drop,glass,532,0,-532
+total,all,11604,11072,-532

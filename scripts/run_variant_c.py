@@ -130,8 +130,7 @@ def main():
                 status = (
                     f"ID {person['track_id']} "
                     f"H:{int(person['has_helmet'])} "
-                    f"V:{int(person['has_vest'])} "
-                    f"G:{int(person['has_glass'])}"
+                    f"V:{int(person['has_vest'])}"
                 )
 
                 cv2.putText(
@@ -154,7 +153,6 @@ def main():
                     "has_head": person["has_head"],
                     "has_helmet": person["has_helmet"],
                     "has_vest": person["has_vest"],
-                    "has_glass": person["has_glass"],
 
                     "head": detection_to_json(
                         person["head"]
@@ -164,9 +162,6 @@ def main():
                     ),
                     "vest": detection_to_json(
                         person["vest"]
-                    ),
-                    "glass": detection_to_json(
-                        person["glass"]
                     ),
                 }
 

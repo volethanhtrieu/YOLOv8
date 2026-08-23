@@ -6,7 +6,7 @@
 Video upload
 → YOLO tiled inference + seam-aware merge
 → ByteTrack theo dõi person
-→ Association ghép helmet / bare_head / vest / glass vào person
+→ Association ghép head / helmet / vest vào person
 → Event Engine V2
 → isolated job preview / cancel / publish
 → Flask REST API
@@ -20,10 +20,117 @@ Video upload
 - AI status và human decision được lưu riêng để giữ audit trail.
 - Job mới chạy trong `outputs/runs/<job_id>` và không thay dữ liệu published cho đến khi operator bấm Publish.
 - Evidence/clip ưu tiên video annotated của run. Nếu artifact annotated bị ngắn hơn `processed_frames`, backend tự chuyển sang video nguồn của run; các run mới ghi đường dẫn này trong `summary.json`.
-- Model mặc định: `weights/candidates/SEQ-C-N2-best.pt`.
+- Runtime dùng đúng 4 class: `person`, `head`, `helmet`, `vest`; `glass` đã bị loại khỏi schema mới.
+- Model mặc định: `weights/candidates/CHVG4-best.pt` (cần train hoặc bàn giao riêng; Git không chứa weight).
 - ByteTrack config: `configs/bytetrack_ppe.yaml`.
 - Lock hiện tại được xuất từ môi trường đã PASS: Python 3.14.6, Ultralytics 8.4.104, Flask 3.1.3 và Streamlit 1.62.0.
 - Torch trong môi trường đã dùng để tạo lock là CPU build. Máy muốn chạy GPU phải cài PyTorch/CUDA tương thích riêng và kiểm tra lại bằng `verify_install.py`.
+
+## 0. Dataset 4-class và fine-tune model
+
+### 0.1. Schema duy nhất của phiên bản hiện tại
+
+```text
+0 person
+1 head
+2 helmet
+3 vest
+```
+
+Mapping từ bộ CHVG 8-class gốc:
+
+| Source ID | Source class | Target |
+|---:|---|---|
+| 0 | blue | 2 helmet |
+| 1 | glass | DROP |
+| 2 | head | 1 head |
+| 3 | person | 0 person |
+| 4 | red | 2 helmet |
+| 5 | vest | 3 vest |
+| 6 | white | 2 helmet |
+| 7 | yellow | 2 helmet |
+
+Converter không sửa dataset nguồn, không tự chia lại train/val/test và không
+thay đổi bốn token tọa độ bbox. Nó cũng hỗ trợ bản `CHVG5_DATASET_HANDOFF` đã
+merge màu mũ nhưng vẫn còn class `glass`; với nguồn này chỉ class 4 bị xóa.
+
+### 0.2. Chuyển đổi và kiểm định
+
+Chạy từ repository root. Thay đường dẫn nguồn bằng file YAML thực tế:
+
+```powershell
+.\bytetrack_ppe\.venv\Scripts\python.exe `
+  .\scripts\data\convert_chvg_to_4class.py `
+  --source-yaml "C:\path\to\source\data.yaml" `
+  --output ".\data\processed\chvg4"
+```
+
+Nguồn phải có đủ ba split đã tồn tại. Nếu YAML khai báo `val/test` nhưng folder
+không có, chương trình dừng và không để lại output một phần. Không dùng tùy chọn
+tự split vì yêu cầu thí nghiệm là giữ nguyên membership.
+
+Khi thành công, output gồm:
+
+```text
+data/processed/chvg4/
+├── images/train, images/val, images/test
+├── labels/train, labels/val, labels/test
+├── data_4class.yaml
+├── conversion_manifest.json
+├── validation_report.json
+└── validation_report.md
+```
+
+Có thể chạy validator độc lập lần nữa:
+
+```powershell
+.\bytetrack_ppe\.venv\Scripts\python.exe `
+  .\scripts\data\validate_chvg_4class.py `
+  --source-yaml "C:\path\to\source\data.yaml" `
+  --target-yaml ".\data\processed\chvg4\data_4class.yaml" `
+  --report-dir ".\data\processed\chvg4\recheck"
+```
+
+Chỉ train khi report là `PASS`. Validator kiểm tra đường dẫn và số ảnh từng
+split, SHA-256 ảnh, label malformed, class ID, toàn bộ token bbox và hai công
+thức đếm box/helmet.
+
+### 0.3. Fine-tune YOLOv8 ở 640 và theo dõi bằng W&B
+
+Cài phần training một lần rồi đăng nhập W&B; không ghi API key vào Git:
+
+```powershell
+.\bytetrack_ppe\.venv\Scripts\python.exe -m pip install -r .\requirements-training.txt
+.\bytetrack_ppe\.venv\Scripts\wandb.exe login
+```
+
+Chạy baseline 640×640:
+
+```powershell
+.\bytetrack_ppe\.venv\Scripts\python.exe `
+  .\scripts\train\train_chvg4.py `
+  --data ".\data\processed\chvg4\data_4class.yaml" `
+  --model yolov8l.pt `
+  --imgsz 640 `
+  --epochs 100 `
+  --batch -1 `
+  --device 0 `
+  --save-period 10 `
+  --name yolov8l_640_baseline
+```
+
+W&B nhận metric cuối mỗi epoch; artifact cuối chứa `best.pt`, `last.pt` và các
+checkpoint `epoch*.pt`. Ultralytics cũng lưu cục bộ trong
+`runs/chvg4/yolov8l_640_baseline/`. Nếu chưa dùng W&B, thêm `--no-wandb`.
+
+Sau khi đánh giá checkpoint trên test split, copy weight được chọn thành:
+
+```text
+bytetrack_ppe/weights/candidates/CHVG4-best.pt
+```
+
+`verify_install.py` sẽ đọc metadata checkpoint và chỉ PASS nếu class order đúng
+chính xác `person, head, helmet, vest`.
 
 ## 1. Chuẩn bị máy Windows mới
 
@@ -123,7 +230,7 @@ ALL HUMAN REVIEW V3 SMOKE TESTS PASSED
 Khi bàn giao sang máy khác, copy riêng:
 
 ```text
-weights/candidates/SEQ-C-N2-best.pt
+weights/candidates/CHVG4-best.pt
 inputs hoặc video test cần dùng
 published outputs nếu muốn giữ event/review hiện tại
 ```
@@ -133,6 +240,7 @@ Thông tin filename, dung lượng và SHA-256 của checkpoint đã kiểm th�
 
 ## 6. Tài liệu kỹ thuật
 
+- `../TRAINING_GUIDE_CHVG4.md`: hướng dẫn riêng từ dataset, W&B, training đến bàn giao checkpoint.
 - `API_CONTRACT.md`: endpoint, input, output và mã lỗi.
 - `PROJECT_STRUCTURE.md`: vai trò từng module và thư mục runtime.
 - `ABLATION_PROTOCOL.md`: quy trình Detection-only vs ByteTrack vs Event Engine dùng cùng detection cache.
@@ -162,25 +270,19 @@ Kiểm tra các file bắt buộc:
 
 ```powershell
 Test-Path .\.venv\Scripts\python.exe
-Test-Path .\weights\candidates\SEQ-C-N2-best.pt
+Test-Path .\weights\candidates\CHVG4-best.pt
 Test-Path .\configs\bytetrack_ppe.yaml
 ```
 
-Cả ba lệnh phải trả `True`. Checkpoint của release đã xác minh:
-
-```text
-Filename : SEQ-C-N2-best.pt
-Size     : 136,724,083 bytes
-SHA-256  : 931088AB16DCD832AC139B74809D67A1395311FC63C08BF2E3138EF41135BB70
-Classes  : person, head, helmet, vest, glass
-```
+Cả ba lệnh phải trả `True`. Hash của checkpoint 4-class phải được ghi vào
+`weights/candidates/README.md` sau khi nhóm chốt model.
 
 Kiểm tra hash:
 
 ```powershell
 Get-FileHash `
   -Algorithm SHA256 `
-  -LiteralPath ".\weights\candidates\SEQ-C-N2-best.pt"
+  -LiteralPath ".\weights\candidates\CHVG4-best.pt"
 ```
 
 Hash khác nghĩa là đang dùng checkpoint khác; không so sánh trực tiếp kết quả
@@ -400,7 +502,7 @@ Các cột chính của `track_ppe_rows.csv`:
 
 ```text
 frame_index,timestamp_s,track_id,person_conf,x1,y1,x2,y2,
-head_conf,helmet_conf,vest_conf,glass_conf
+head_conf,helmet_conf,vest_conf
 ```
 
 `unique_track_ids` là số identity ByteTrack dự đoán, không phải số người thật
@@ -553,8 +655,9 @@ Endpoint, query, body và mã lỗi đầy đủ nằm trong `API_CONTRACT.md`.
 
 ### Thiếu checkpoint
 
-Đảm bảo có `weights/candidates/SEQ-C-N2-best.pt`, sau đó chạy
-`verify_install.py` và đối chiếu SHA-256.
+Đảm bảo có `weights/candidates/CHVG4-best.pt`, sau đó chạy
+`verify_install.py`. Nếu file là checkpoint 5-class cũ, verifier sẽ từ chối dù
+bốn class đầu có cùng tên.
 
 ### CUDA không khả dụng
 

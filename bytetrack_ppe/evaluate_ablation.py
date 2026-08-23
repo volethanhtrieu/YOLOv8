@@ -146,7 +146,6 @@ def load_track_rows(path: Path) -> list[dict[str, Any]]:
                 "head_conf": optional_float(raw.get("head_conf")),
                 "helmet_conf": optional_float(raw.get("helmet_conf")),
                 "vest_conf": optional_float(raw.get("vest_conf")),
-                "glass_conf": optional_float(raw.get("glass_conf")),
             }
         )
     return rows

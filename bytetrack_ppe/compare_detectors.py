@@ -11,9 +11,10 @@ from ultralytics import YOLO
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
+CANDIDATE_DIR = PROJECT_DIR / "weights" / "candidates"
 
 model_paths = [
-    CANDIDATE_DIR / "SEQ-C-N2-best.pt"
+    CANDIDATE_DIR / "CHVG4-best.pt"
 ]
 VIDEO_PATH = PROJECT_DIR / "videos" / "test.mp4"
 
@@ -52,7 +53,7 @@ def find_person_class_id(names):
     return None
 
 
-def is_full_chvg_model(names):
+def is_chvg4_model(names):
     if isinstance(names, dict):
         class_names = {
             str(v).strip().lower()
@@ -66,17 +67,12 @@ def is_full_chvg_model(names):
 
     required = {
         "person",
+        "head",
         "helmet",
         "vest",
-        "glass",
     }
 
-    has_head = (
-        "head" in class_names
-        or "bare_head" in class_names
-    )
-
-    return required.issubset(class_names) and has_head
+    return class_names == required
 
 
 def box_iou(box_a, box_b):
@@ -195,14 +191,14 @@ def evaluate_model(model_path):
             "status": "skipped_no_person",
         }
 
-    if not is_full_chvg_model(model.names):
+    if not is_chvg4_model(model.names):
         print(
             "SKIP: not full CHVG PPE schema"
         )
 
         return {
             "model": model_path.name,
-            "status": "skipped_non_chvg5",
+            "status": "skipped_non_chvg4",
             "classes": str(model.names),
         }
 

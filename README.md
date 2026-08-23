@@ -1,34 +1,33 @@
-# YOLOv8
-Workplace Safety Monitoring of Personal Protective Equipment (PPE) Non-Compliance Using the You Only Look Once Version 8 (YOLOv8) Object Detector in Python
-# PPE Non-Compliance Detection Using YOLOv8l
+# CHVG4 PPE Safety Monitoring
 
-## Scope
+Hệ thống phát hiện vi phạm PPE trong video công trường:
 
-The system detects construction workers and PPE items using YOLOv8l.
+```text
+YOLOv8 detection (person, head, helmet, vest)
+→ ByteTrack chỉ theo dõi person
+→ Association gắn PPE vào từng person track
+→ Event Engine tổng hợp bằng chứng theo thời gian
+→ Flask API + Streamlit dashboard + Human Review
+```
 
-Datasets:
+Schema runtime hiện tại có đúng 4 class: `person`, `head`, `helmet`, `vest`.
+Các màu mũ của CHVG được merge thành `helmet`; class `glass` bị loại khỏi
+dataset, checkpoint, association, CSV, API và dashboard.
 
-- CHVG
-- SHEL5K
+## Bắt đầu ở đâu
 
-Final target classes:
+- Hướng dẫn đầy đủ từ dataset đến chạy ứng dụng: [`bytetrack_ppe/README.md`](bytetrack_ppe/README.md)
+- Hướng dẫn riêng cho người train: [`TRAINING_GUIDE_CHVG4.md`](TRAINING_GUIDE_CHVG4.md)
+- Converter/validator: `scripts/data/`
+- Cấu hình dataset 4-class có thể commit: `configs/data_4class.yaml`
+- Fine-tune + W&B: `scripts/train/train_chvg4.py`
+- Backend chính: `bytetrack_ppe/run_tiled_ppe_pipeline_v3.py`
+- Dataset sinh local: `data/processed/chvg4/` (không commit)
+- Model sinh local: `runs/chvg4/` và `bytetrack_ppe/weights/candidates/` (không commit)
 
-- person
-- head
-- helmet
-- vest
-- glass
+## Trạng thái hiện tại
 
-NoHelmet, NoVest and NoGlass are inferred using detection association and tracking rules.
-
-## Repository structure
-
-- configs: dataset and class mapping configurations
-- data: local dataset directories and manifests
-- scripts/data: dataset preparation scripts
-- scripts/train: training scripts
-- src/tracking: person tracking
-- src/compliance: PPE violation rules
-- src/app: application and interface
-- reports: generated data reports
-- docs: report and technical documentation
+- Dataset 4-class đã validation PASS trên 1.698 ảnh với split 1.358/170/170.
+- Unit test dataset/backend và smoke test API/Job/Human Review đã PASS.
+- Inference thật đang chờ checkpoint `CHVG4-best.pt` được fine-tune từ dataset
+  4-class; checkpoint 5-class Phase 2 không tương thích với backend mới.

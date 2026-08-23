@@ -14,14 +14,12 @@ REQUIRED_CLASSES = {
     "head",
     "helmet",
     "vest",
-    "glass",
 }
 
 PPE_CLASS_NAMES = {
     "head",
     "helmet",
     "vest",
-    "glass",
 }
 
 
@@ -53,6 +51,27 @@ class VariantCBackend:
             self.names
         )
 
+        actual_names = (
+            tuple(
+                self.names[class_id]
+                for class_id in sorted(self.names)
+            )
+            if isinstance(self.names, dict)
+            else tuple(self.names)
+        )
+        expected_names = (
+            "person",
+            "head",
+            "helmet",
+            "vest",
+        )
+
+        if actual_names != expected_names:
+            raise ValueError(
+                "Checkpoint must use exactly the four-class schema "
+                f"{expected_names}; got {actual_names}"
+            )
+
         missing = REQUIRED_CLASSES - set(
             self.class_name_to_id.keys()
         )
@@ -73,7 +92,6 @@ class VariantCBackend:
                 "head",
                 "helmet",
                 "vest",
-                "glass",
             )
         ]
 

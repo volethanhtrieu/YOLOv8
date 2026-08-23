@@ -31,7 +31,7 @@ dashboard.py
 | `clip_service.py` | Tạo/cached event clip H.264 bằng FFmpeg. |
 | `human_review_store.py` | Lưu review riêng trong JSON và giữ history. |
 | `configs/bytetrack_ppe.yaml` | Ngưỡng ByteTrack đã chốt. |
-| `weights/candidates/SEQ-C-N2-best.pt` | Detector mặc định của runner. |
+| `weights/candidates/CHVG4-best.pt` | Detector 4-class mặc định; bàn giao riêng, không lưu trong Git. |
 
 ## Script release
 
@@ -64,8 +64,9 @@ reports/phase2/
   ablation_full_593_table.csv
 ```
 
-Hai file này lưu kết quả đã kiểm tra của full ablation 593 frame. Các output thô,
-video và detection cache vẫn nằm trong `outputs/` và không đưa lên Git.
+Hai file này lưu kết quả lịch sử của full ablation 593 frame dùng checkpoint
+5-class Phase 2. Không dùng chúng như kết quả của detector 4-class mới. Các
+output thô, video và detection cache vẫn nằm trong `outputs/` và không đưa lên Git.
 
 ## Thư mục runtime
 

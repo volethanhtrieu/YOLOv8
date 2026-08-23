@@ -6,6 +6,18 @@ EVENT_ID = (
 )
 
 
+def has_legacy_glass_field(value):
+    if isinstance(value, dict):
+        return any(
+            "glass" in str(key).lower()
+            or has_legacy_glass_field(item)
+            for key, item in value.items()
+        )
+    if isinstance(value, list):
+        return any(has_legacy_glass_field(item) for item in value)
+    return False
+
+
 def main():
     app = create_app()
     app.config.update(
@@ -33,6 +45,9 @@ def main():
         )
 
         if response.status_code != 200:
+            failed = True
+        elif response.is_json and has_legacy_glass_field(response.get_json()):
+            print("FAIL: legacy glass field exposed")
             failed = True
 
     for phase in (

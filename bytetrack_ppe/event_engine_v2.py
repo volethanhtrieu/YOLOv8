@@ -186,13 +186,6 @@ def load_rows(path):
                             )
                         )
                     ),
-                    "glass_conf": (
-                        parse_optional_float(
-                            row.get(
-                                "glass_conf"
-                            )
-                        )
-                    ),
                 }
             )
 

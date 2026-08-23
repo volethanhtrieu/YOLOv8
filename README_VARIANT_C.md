@@ -9,7 +9,7 @@ Video
   ↓
 YOLO detection
   ├── person ──> ByteTrack ──> track_id
-  └── head / helmet / vest / glass
+  └── head / helmet / vest
                     ↓
              PPE Association
                     ↓
@@ -32,7 +32,6 @@ Variant C gồm 3 thành phần chính:
      - `head`
      - `helmet`
      - `vest`
-     - `glass`
 
 2. **ByteTrack**
    - Chỉ track class `person`.
@@ -41,14 +40,14 @@ Variant C gồm 3 thành phần chính:
 
 3. **Association**
    - Ghép PPE vào đúng người.
-   - `helmet` và `glass` được ưu tiên ghép vào vùng đầu.
+   - `helmet` được ghép vào vùng đầu.
    - `vest` được ghép vào vùng thân.
    - Một PPE không được gán cho nhiều người cùng lúc.
 
 Output hiển thị dạng:
 
 ```text
-ID 1 H:1 V:1 G:0
+ID 1 H:1 V:1
 ```
 
 Trong đó:
@@ -56,8 +55,6 @@ Trong đó:
 ```text
 H = Helmet
 V = Vest
-G = Glass
-
 1 = Có
 0 = Không có / không detect được
 ```
@@ -65,14 +62,13 @@ G = Glass
 Ví dụ:
 
 ```text
-ID 1 H:1 V:1 G:0
+ID 1 H:1 V:1
 ```
 
 nghĩa là người `ID 1`:
 
 - có helmet;
 - có vest;
-- không detect được glass.
 
 ---
 
@@ -288,10 +284,10 @@ Có thể kiểm tra model đọc được hay không:
 python -c "from ultralytics import YOLO; m=YOLO('models/C-N0-coco-best.pt'); print(m.names)"
 ```
 
-Kết quả cần có 5 class:
+Kết quả cần có đúng 4 class:
 
 ```text
-{0: 'person', 1: 'head', 2: 'helmet', 3: 'vest', 4: 'glass'}
+{0: 'person', 1: 'head', 2: 'helmet', 3: 'vest'}
 ```
 
 Nếu thiếu class, checkpoint đó không phù hợp với Variant C.
@@ -444,8 +440,8 @@ File `.mp4` chứa:
 Ví dụ:
 
 ```text
-ID 1 H:1 V:1 G:0
-ID 2 H:0 V:1 G:0
+ID 1 H:1 V:1
+ID 2 H:0 V:1
 ```
 
 ## JSONL
@@ -468,8 +464,7 @@ Mỗi frame sẽ chứa thông tin dạng:
       "person_conf": 0.91,
       "has_head": true,
       "has_helmet": true,
-      "has_vest": true,
-      "has_glass": false
+      "has_vest": true
     }
   ]
 }
@@ -586,13 +581,13 @@ Association không đơn giản lấy PPE gần người nhất.
 
 Backend chia person thành các vùng.
 
-## Helmet / Glass
+## Helmet
 
 Ưu tiên vùng đầu:
 
 ```text
 ┌──────────────────┐
-│    HEAD REGION   │  ← helmet / glass
+│    HEAD REGION   │  ← helmet
 ├──────────────────┤
 │                  │
 │      PERSON      │
@@ -600,7 +595,7 @@ Backend chia person thành các vùng.
 └──────────────────┘
 ```
 
-Nếu model detect được `head`, helmet/glass sẽ ưu tiên bbox head.
+Nếu model detect được `head`, helmet sẽ ưu tiên bbox head.
 
 ## Vest
 
@@ -665,7 +660,7 @@ ID 1
 ID 2
 ID 3
 
-head / helmet / vest / glass
+head / helmet / vest
   ↓
 PPE detection
   ↓
@@ -806,7 +801,6 @@ person
 head
 helmet
 vest
-glass
 ```
 
 Dùng đúng model C-N0 của nhóm.
