@@ -5,3 +5,4 @@ opencv-python>=4.8
 PyYAML>=6.0
 torch>=2.0
 ultralytics>=8.2
+wandb>=0.18,<1.0

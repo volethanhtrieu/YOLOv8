@@ -1,0 +1,15 @@
+{
+  "os":  "Windows-10-10.0.26200-SP0",
+  "python":  "CPython 3.10.20",
+  "startedAt":  "2026-08-27T15:02:26.380069Z",
+  "program":  "<python with no main file>",
+  "git":  {
+    "remote":  "https://github.com/volethanhtrieu/YOLOv8.git",
+    "commit":  "218372564c8825bbd5654dbc9fa747be4664f25d"
+  },
+  "email":  "kn020920006@gmail.com",
+  "root":  "D:\\253\\PYTHON & ML\\PROJECT\\PPE_Ablation_Backend_YOLOv8x\\ppe_ablation_backend",
+  "host":  "Khanh",
+  "executable":  "D:\\Anaconda3\\envs\\ppe_backend\\python.exe",
+  "writerId":  "nb4did1moie8hditaaz5uhlb1e7jby2n"
+}

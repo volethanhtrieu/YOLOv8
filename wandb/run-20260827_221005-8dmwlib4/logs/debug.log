@@ -1,0 +1,10 @@
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_setup.py:_flush():81] Current SDK version is 0.29.0
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_setup.py:_flush():81] Configure stats pid to 7992
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_init.py:setup_run_log_directory():739] Logging user logs to D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\wandb\run-20260827_221005-8dmwlib4\logs\debug.log
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_init.py:setup_run_log_directory():740] Logging internal logs to D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\wandb\run-20260827_221005-8dmwlib4\logs\debug-internal.log
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_init.py:init():783] calling init triggers
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_init.py:init():788] wandb.init called with sweep_config: {}
+config: {'profile': 'D_full_system', 'model': {'path': 'weights/best.pt', 'imgsz': 640, 'confidence': 0.25, 'iou': 0.5, 'device': '0'}, 'tracking': {'enabled': True, 'tracker': 'bytetrack.yaml', 'persist': True, 'missing_timeout_seconds': 3.0}, 'classes': {'person': ['person'], 'head': ['head'], 'helmet': ['helmet'], 'vest': ['vest']}, 'association': {'enabled': True, 'mode': 'roi', 'head_ratio': 0.35, 'torso_top_ratio': 0.2, 'torso_bottom_ratio': 0.85, 'min_item_inside_ratio': 0.3}, 'event': {'enabled': True, 'mode': 'majority', 'violation_seconds': 2.0, 'recovery_seconds': 1.0, 'voting_window_seconds': 2.5, 'voting_ratio': 0.7, 'min_voting_samples': 5, 'required_ppe': ['helmet', 'vest']}, 'storage': {'database': 'data/detections.db', 'evidence_dir': 'evidence', 'save_evidence': True}, 'api': {'host': '0.0.0.0', 'port': 5000, 'jpeg_quality': 85}, '_wandb': {}}
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_init.py:init():831] starting backend
+2026-08-27 22:10:05,597 INFO    MainThread:7992 [wandb_init.py:init():846] sending inform_init request
