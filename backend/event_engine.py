@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass, field
+from uuid import uuid4
 
 from .config import EventConfig
 from .types import EventDecision, PersonPPE
@@ -25,6 +26,7 @@ class EventEngine:
         self.missing_timeout_seconds = missing_timeout_seconds
         self._states: dict[tuple[str, int, str], _ViolationState] = {}
         self._sequence = 0
+        self._session_id = uuid4().hex[:12]
 
     def process(
         self, camera_id: str, people: list[PersonPPE], observed_at: float
@@ -47,6 +49,14 @@ class EventEngine:
                 )
         decisions.extend(self._expire_missing(seen, observed_at))
         return decisions
+
+    def active_violations(self, camera_id: str) -> set[tuple[int, str]]:
+        """Return confirmed active violations as unique (track_id, type) pairs."""
+        return {
+            (track_id, violation_type)
+            for (state_camera, track_id, violation_type), state in self._states.items()
+            if state_camera == camera_id and state.active
+        }
 
     def close_camera(
         self, camera_id: str, observed_at: float, reason: str = "source_ended"
@@ -88,7 +98,8 @@ class EventEngine:
             return [
                 EventDecision(
                     "start",
-                    f"{camera_id}:{track_id}:{violation_type}:frame:{self._sequence}",
+                    f"{camera_id}:{track_id}:{violation_type}:"
+                    f"{self._session_id}:frame:{self._sequence}",
                     camera_id,
                     track_id,
                     violation_type,
@@ -119,7 +130,8 @@ class EventEngine:
             self._sequence += 1
             state.active = True
             state.event_key = (
-                f"{camera_id}:{track_id}:{violation_type}:{int(now * 1000)}:{self._sequence}"
+                f"{camera_id}:{track_id}:{violation_type}:{self._session_id}:"
+                f"{int(now * 1000)}:{self._sequence}"
             )
             return [
                 EventDecision(

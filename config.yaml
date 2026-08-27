@@ -1,24 +1,24 @@
 profile: D_full_system
 
 model:
-  path: weights/S-N0-coco-best.pt
+  path: weights/best.pt
   imgsz: 640
   confidence: 0.25
   iou: 0.50
-  device: null  # null = tự chọn; dùng 0 cho GPU đầu tiên hoặc cpu
+  device: "0"  
 
 tracking:
   enabled: true
   tracker: bytetrack.yaml
   persist: true
-  missing_timeout_seconds: 2.0
+  missing_timeout_seconds: 3.0
 
-# Model CHVG4 có đúng 4 lớp: person, head, helmet, vest.
+# Model CHVG4 có  4 lớp: person, head, helmet, vest.
 classes:
   person: [person]
   head: [head]
   helmet: [helmet]
-  vest: []
+  vest: [vest]
 
 association:
   enabled: true
@@ -26,17 +26,17 @@ association:
   head_ratio: 0.35
   torso_top_ratio: 0.20
   torso_bottom_ratio: 0.85
-  min_item_inside_ratio: 0.50
+  min_item_inside_ratio: 0.30
 
 event:
   enabled: true
-  mode: consecutive
+  mode: majority
   violation_seconds: 2.0
-  recovery_seconds: 0.5
-  voting_window_seconds: 2.0
+  recovery_seconds: 1.0
+  voting_window_seconds: 2.5
   voting_ratio: 0.70
   min_voting_samples: 5
-  required_ppe: [helmet]
+  required_ppe: [helmet, vest]
 
 storage:
   database: data/detections.db
@@ -84,5 +84,9 @@ ablation_profiles:
       mode: roi
     event:
       enabled: true
-      mode: consecutive
+      mode: majority
       violation_seconds: 2.0
+      recovery_seconds: 1.0
+      voting_window_seconds: 2.5
+      voting_ratio: 0.70
+      min_voting_samples: 5
