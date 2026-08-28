@@ -1,4 +1,4 @@
-# Model card: YOLO26L Phase-11 no-SARD baseline
+# Model card: PPE YOLO26L training
 
 ## Status
 
@@ -17,7 +17,6 @@ checksums have not yet been copied into this clean repository export.
 - Deterministic mode: enabled
 - AMP: enabled
 - Patience: 30
-- SARD images: 0
 
 ## Required completion before publication
 

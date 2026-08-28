@@ -35,6 +35,5 @@ NoHelmet, NoVest and NoGlass are inferred using detection association and tracki
 
 ## Experiments
 
-- [Phase 11 no-SARD baseline](experiments/phase11-no-sard-baseline/README.md):
-  reproducible four-class training package using the adjudicated CHVG4, SHEL4,
-  SH17, and Pictor-yolo selections. SARD is intentionally excluded.
+- [Training](experiments/training/README.md): reproducible four-class PPE model
+  training, validation, Docker, tmux, and W&B instructions.

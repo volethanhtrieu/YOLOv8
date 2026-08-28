@@ -45,7 +45,6 @@
   "image_count": 4844,
   "label_count": 4844,
   "pictor_empty_label_count": 78,
-  "sard_count": 0,
   "group_leakage_count": 0,
   "split_assignment_residuals": {
     "SHEL4": {
@@ -68,7 +67,6 @@
     "unique_4844": true,
     "paired_labels_4844": true,
     "source_counts_exact": true,
-    "sard_zero": true,
     "pictor_empty_78": true,
     "yolo_syntax": true,
     "class_ids_0_3": true,

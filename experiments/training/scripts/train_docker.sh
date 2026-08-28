@@ -2,9 +2,9 @@
 set -Eeuo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE="${TRAIN_IMAGE:-ppe-yolo26-no-sard:ultralytics8.4.104}"
-CONFIG_RELATIVE="${TRAIN_CONFIG:-configs/no_sard_baseline.yaml}"
-CONTAINER_NAME="${CONTAINER_NAME:-ppe_yolo26_no_sard_train}"
+IMAGE="${TRAIN_IMAGE:-ppe-yolo26-training:ultralytics8.4.104}"
+CONFIG_RELATIVE="${TRAIN_CONFIG:-configs/training.yaml}"
+CONTAINER_NAME="${CONTAINER_NAME:-ppe_yolo26_training}"
 
 : "${DATASET_DIR:?Set DATASET_DIR to the prepared dataset root containing data.yaml}"
 : "${OUTPUT_DIR:?Set OUTPUT_DIR to a persistent host output directory}"

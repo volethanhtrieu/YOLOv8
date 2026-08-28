@@ -57,7 +57,7 @@ The source folder was not modified.
 
 - Choose the license after reviewing Ultralytics and dataset terms.
 - Add author/repository details to `CITATION.cff.example`.
-- Export and sanitize the authoritative Phase-11 manifest.
+- Export and sanitize the authoritative training manifest.
 - Add final `results.csv`, metric summary, plots, model checksums, W&B URL, and
   Docker image digest.
 - Verify the clean Docker image builds and starts on the RTX 4090 server.

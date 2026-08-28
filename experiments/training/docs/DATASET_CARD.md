@@ -1,4 +1,4 @@
-# Dataset card: Phase-11 no-SARD baseline
+# Dataset card: PPE training dataset
 
 ## Purpose
 
@@ -9,13 +9,11 @@ canonical schema `person`, `head`, `helmet`, and `vest`.
 
 | Derived source | Train | Validation | Test | Total | Role |
 |---|---:|---:|---:|---:|---|
-| CHVG4 | 1,358 | 170 | 170 | 1,698 | Core construction PPE |
+| CHVG4 | 1,358 | 169 | 171 | 1,698 | Core construction PPE |
 | SHEL4 | 2,400 | 300 | 300 | 3,000 | Scale, crowd, head, helmet coverage |
 | SH17 | 54 | 7 | 7 | 68 | Corrected industrial/PPE diversity |
-| Pictor-yolo | 62 | 7 | 9 | 78 | Human-verified no-person negatives |
+| Pictor-yolo | 62 | 8 | 8 | 78 | Human-verified no-person negatives |
 | **Total** | **3,874** | **484** | **486** | **4,844** | |
-
-SARD contributes zero images to this baseline.
 
 ## Annotation semantics
 
@@ -43,7 +41,6 @@ and any restrictions that apply to derived annotations.
 
 ## Known limitations
 
-- SARD/CCTV imagery is absent.
 - SH17 is a very small selected subset.
 - Pictor contributes negative backgrounds only.
 - Site/camera and geographic coverage may be uneven.

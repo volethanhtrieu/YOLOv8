@@ -26,7 +26,7 @@ Python dependencies. Before publication, build the clean image, export a full
 Example:
 
 ```bash
-docker run --rm ppe-yolo26-no-sard:ultralytics8.4.104 \
+docker run --rm ppe-yolo26-training:ultralytics8.4.104 \
   python -m pip freeze --all > requirements.lock.txt
 ```
 

@@ -6,6 +6,11 @@ dataset:
     train: 3874
     val: 484
     test: 486
+  expected_sources:
+    CHVG4: 1698
+    PICTOR-yolo: 78
+    SH17: 68
+    SHEL4: 3000
   expected_names:
     0: person
     1: head
@@ -26,7 +31,7 @@ training:
   cache: false
   save_period: 10
   output_root: outputs
-  run_name: yolo26l_phase11_no_sard_main_seed42
+  run_name: yolo26l_training_seed42
 
 wandb:
   enabled: true
@@ -36,8 +41,7 @@ wandb:
   resume: never
   tags:
     - yolo26l
-    - phase11
-    - no-sard
+    - training
     - baseline
     - seed42
     - chvg4

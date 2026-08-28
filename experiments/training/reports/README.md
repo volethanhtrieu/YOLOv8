@@ -1,6 +1,6 @@
 # Final result export
 
-`phase11_no_sard_summary.json` records the validated dataset composition,
+`training_summary.json` records the validated dataset composition,
 source-specific splits, class counts, and fail-fast checks. The remote path in
 the source summary was reduced to the CVAT artifact filename.
 

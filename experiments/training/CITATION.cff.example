@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it using these metadata."
-title: "PPE YOLO26L no-SARD baseline training pipeline"
+title: "PPE YOLO26L training pipeline"
 type: software
 authors:
   - family-names: "REPLACE_ME"

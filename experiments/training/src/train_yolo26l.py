@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Train or resume the Phase-11 no-SARD YOLO26L baseline."""
+"""Train or resume the four-class PPE YOLO26L model."""
 
 from __future__ import annotations
 
 import argparse
 import csv
 import os
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -23,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--config",
         type=Path,
-        default=Path("configs/no_sard_baseline.yaml"),
+        default=Path("configs/training.yaml"),
         help="Training configuration YAML.",
     )
     parser.add_argument("--data", type=Path, help="Override the dataset data.yaml path.")
@@ -138,8 +139,15 @@ def startup_assertions(config: dict[str, Any], data_path: Path, device: int) -> 
             raise AssertionError(
                 f"Manifest has {len(rows)} rows; expected {expected_total}"
             )
-        if any(row.get("source", "").strip().upper() == "SARD" for row in rows):
-            raise AssertionError("SARD is present in the no-SARD manifest")
+        expected_sources = {
+            str(source): int(count)
+            for source, count in config["dataset"]["expected_sources"].items()
+        }
+        actual_sources = dict(Counter(row.get("source", "").strip() for row in rows))
+        if actual_sources != expected_sources:
+            raise AssertionError(
+                f"Manifest source counts differ: {actual_sources} != {expected_sources}"
+            )
 
     if not torch.cuda.is_available():
         raise AssertionError("CUDA is unavailable")
@@ -210,7 +218,6 @@ def main() -> None:
         "model": str(model_value),
         "split_counts": split_counts,
         "canonical_names": CANONICAL_NAMES,
-        "sard_images": 0,
     }
     wandb_run = configure_wandb(config, run_name, training_record)
 
