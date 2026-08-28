@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as described below."
+title: "PPE Detection Training Pipeline"
+type: software
+authors:
+  - family-names: "Vo"
+    given-names: "Trieu"
+  - family-names: "Ta"
+    given-names: "Khai"
+  - family-names: "Nguyen"
+    given-names: "Quoc"
+  - family-names: "Nguyen"
+    given-names: "Khanh"
+  - family-names: "Nguyen"
+    given-names: "Phuc"
+version: 1.0.0
+date-released: 2026-08-28
+repository-code: "https://github.com/volethanhtrieu/YOLOv8"
