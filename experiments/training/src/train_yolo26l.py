@@ -17,6 +17,27 @@ from ultralytics import YOLO, settings
 
 CANONICAL_NAMES = {0: "person", 1: "head", 2: "helmet", 3: "vest"}
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+RESERVED_OVERRIDES = {
+    "amp",
+    "batch",
+    "cache",
+    "data",
+    "deterministic",
+    "device",
+    "epochs",
+    "imgsz",
+    "name",
+    "patience",
+    "plots",
+    "pretrained",
+    "project",
+    "resume",
+    "save_dir",
+    "save_period",
+    "seed",
+    "val",
+    "workers",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -194,6 +215,15 @@ def main() -> None:
     args = parse_args()
     config = load_config(args.config)
     training = dict(config["training"])
+    optional_overrides = training.pop("overrides", {}) or {}
+    if not isinstance(optional_overrides, dict):
+        raise ValueError("training.overrides must be a mapping")
+    conflicts = RESERVED_OVERRIDES.intersection(optional_overrides)
+    if conflicts:
+        raise ValueError(
+            "Move protected settings out of training.overrides: "
+            + ", ".join(sorted(conflicts))
+        )
 
     data_value = args.data or os.getenv("DATA_YAML") or config["dataset"].get("data_yaml")
     if not data_value:
@@ -218,6 +248,7 @@ def main() -> None:
         "model": str(model_value),
         "split_counts": split_counts,
         "canonical_names": CANONICAL_NAMES,
+        "ultralytics_overrides": optional_overrides,
     }
     wandb_run = configure_wandb(config, run_name, training_record)
 
@@ -235,6 +266,7 @@ def main() -> None:
             "save_period": int(training["save_period"]),
             "val": True,
             "plots": True,
+            **optional_overrides,
         }
         if resume_value:
             checkpoint = Path(

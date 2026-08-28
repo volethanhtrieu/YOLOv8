@@ -68,6 +68,31 @@ seed: 42
 Keep the class order and expected dataset counts unchanged unless the prepared
 dataset is intentionally replaced.
 
+Ultralytics supports many additional hyperparameters, including optimizer and
+learning-rate settings (`optimizer`, `lr0`, `lrf`, `momentum`,
+`weight_decay`), warmup and scheduling (`warmup_epochs`, `cos_lr`,
+`close_mosaic`), loss weights (`box`, `cls`, `dfl`), augmentation (`mosaic`,
+`mixup`, `fliplr`, `scale`, `translate`, `hsv_h`, `hsv_s`, `hsv_v`), and
+fine-tuning controls (`freeze`, `rect`, `multi_scale`).
+
+This training pipeline uses the defaults supplied by the pinned Ultralytics
+version for every optional parameter that is not explicitly configured. Users
+may change them when needed by adding entries under `training.overrides`:
+
+```yaml
+training:
+  overrides:
+    optimizer: AdamW
+    lr0: 0.001
+    weight_decay: 0.0005
+    cos_lr: true
+```
+
+Leave `overrides: {}` unchanged to reproduce the default behavior. Change one
+group of hyperparameters at a time and record every override in W&B so that
+runs remain comparable. The complete option reference is available in the
+[Ultralytics training documentation](https://docs.ultralytics.com/modes/train/).
+
 ## 4. Build the runtime image locally (fallback)
 
 ```bash

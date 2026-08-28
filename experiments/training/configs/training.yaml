@@ -33,6 +33,21 @@ training:
   output_root: outputs
   run_name: yolo26l_training_seed42
 
+  # Optional Ultralytics train() arguments. Leave empty to use the defaults
+  # supplied by the pinned Ultralytics version in requirements.txt.
+  overrides: {}
+
+  # Example overrides (remove the braces above and uncomment only what is needed):
+  # overrides:
+  #   optimizer: AdamW
+  #   lr0: 0.001
+  #   weight_decay: 0.0005
+  #   cos_lr: true
+  #   close_mosaic: 10
+  #   mosaic: 1.0
+  #   mixup: 0.0
+  #   fliplr: 0.5
+
 wandb:
   enabled: true
   project: ml4u-ppe-yolo26
