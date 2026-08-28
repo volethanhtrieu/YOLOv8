@@ -11,7 +11,7 @@ if [[ -f "$ENV_FILE" ]]; then
   set +a
 fi
 
-IMAGE="${TRAIN_IMAGE:-ppe-yolo26-training:ultralytics8.4.104}"
+IMAGE="${TRAIN_IMAGE:-ghcr.io/volethanhtrieu/yolov8-training:latest}"
 CONFIG_RELATIVE="${TRAIN_CONFIG:-configs/training.yaml}"
 CONTAINER_NAME="${CONTAINER_NAME:-ppe_yolo26_training}"
 

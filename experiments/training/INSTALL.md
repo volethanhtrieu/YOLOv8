@@ -58,7 +58,34 @@ git clone https://github.com/volethanhtrieu/YOLOv8.git
 cd YOLOv8/experiments/training
 ```
 
-## 3. Recommended: Docker environment
+## 3. Recommended: prebuilt Docker environment
+
+Pull the public image:
+
+```bash
+docker pull ghcr.io/volethanhtrieu/yolov8-training:latest
+```
+
+Verify the installed packages and GPU:
+
+```bash
+docker run --rm --gpus all \
+  --volume "$PWD:/workspace:ro" \
+  --workdir /workspace \
+  ghcr.io/volethanhtrieu/yolov8-training:latest \
+  python scripts/check_environment.py
+```
+
+The repository workflow publishes both `latest` and an immutable commit tag
+such as `sha-0123456`. For a reproducible experiment, record the pulled image
+digest from:
+
+```bash
+docker image inspect ghcr.io/volethanhtrieu/yolov8-training:latest \
+  --format '{{index .RepoDigests 0}}'
+```
+
+## 4. Build the Docker environment locally (fallback)
 
 Build the pinned runtime:
 
@@ -69,7 +96,7 @@ docker build \
   .
 ```
 
-Verify the installed packages and GPU:
+Verify the locally built image:
 
 ```bash
 docker run --rm --gpus all \
@@ -79,7 +106,7 @@ docker run --rm --gpus all \
   python scripts/check_environment.py
 ```
 
-## 4. Alternative: local Python environment
+## 5. Alternative: local Python environment
 
 One command creates `.venv`, upgrades packaging tools, installs every pinned
 dependency from `requirements.txt`, and runs the environment checker:
@@ -110,7 +137,7 @@ For inspection without a GPU:
 python scripts/check_environment.py --allow-cpu
 ```
 
-## 5. Configure runtime paths and W&B
+## 6. Configure runtime paths and W&B
 
 Create the ignored local environment file:
 
@@ -133,11 +160,12 @@ wandb status
 
 Never commit `.env`, credentials, datasets, model weights, or run outputs.
 
-## 6. Useful shortcuts
+## 7. Useful shortcuts
 
 ```bash
 make setup
 make check
+make docker-pull
 make docker-build
 make validate DATA_YAML=/absolute/path/to/dataset/data.yaml
 make train

@@ -20,7 +20,8 @@ Essential instructions for training the four-class PPE detector:
 Detailed host, Docker, local Python, CUDA, and W&B setup is documented in
 [INSTALL.md](INSTALL.md). Common failures are covered in
 [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md). Changes intended for the
-team repository should follow [CONTRIBUTING.md](CONTRIBUTING.md).
+team repository should follow [CONTRIBUTING.md](CONTRIBUTING.md). Image
+publication is described in [docs/CONTAINER_IMAGE.md](docs/CONTAINER_IMAGE.md).
 
 ## 1. Enter the training directory
 
@@ -33,8 +34,12 @@ cd experiments/training
 Recommended reproducible route:
 
 ```bash
-make docker-build
+docker pull ghcr.io/volethanhtrieu/yolov8-training:latest
 ```
+
+The image contains the pinned Python, PyTorch, CUDA runtime, Ultralytics, W&B,
+and supporting packages. No registry login is required after its package
+visibility is set to public.
 
 Alternative one-command local installation:
 
@@ -63,7 +68,7 @@ seed: 42
 Keep the class order and expected dataset counts unchanged unless the prepared
 dataset is intentionally replaced.
 
-## 4. Build the runtime image
+## 4. Build the runtime image locally (fallback)
 
 ```bash
 docker build \
@@ -72,7 +77,7 @@ docker build \
   .
 ```
 
-Skip this step if `make docker-build` was already used.
+Skip this step when using the prebuilt image from GitHub Container Registry.
 
 ## 5. Set paths and W&B
 
@@ -92,7 +97,7 @@ docker run --rm \
   --volume "$PWD:/workspace:ro" \
   --volume "$DATASET_DIR:/data:ro" \
   --workdir /workspace \
-  ppe-yolo26-training:ultralytics8.4.104 \
+  ghcr.io/volethanhtrieu/yolov8-training:latest \
   python scripts/validate_dataset.py --data /data/data.yaml
 ```
 

@@ -1,5 +1,8 @@
 FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 
+LABEL org.opencontainers.image.source="https://github.com/volethanhtrieu/YOLOv8"
+LABEL org.opencontainers.image.description="Reproducible PPE detector training environment"
+
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

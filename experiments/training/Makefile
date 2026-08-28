@@ -1,15 +1,18 @@
 SHELL := /usr/bin/env bash
 PYTHON ?= .venv/bin/python
-IMAGE ?= ppe-yolo26-training:ultralytics8.4.104
+IMAGE ?= ghcr.io/volethanhtrieu/yolov8-training:latest
 DATA_YAML ?=
 
-.PHONY: setup check docker-build validate train
+.PHONY: setup check docker-pull docker-build validate train
 
 setup:
 	bash scripts/setup_env.sh
 
 check:
 	$(PYTHON) scripts/check_environment.py
+
+docker-pull:
+	docker pull $(IMAGE)
 
 docker-build:
 	docker build --file docker/Dockerfile.runtime --tag $(IMAGE) .
