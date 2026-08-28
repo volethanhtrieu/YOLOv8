@@ -17,13 +17,36 @@ Essential instructions for training the four-class PPE detector:
 - A persistent output directory.
 - A Weights & Biases account and API key if online logging is enabled.
 
+Detailed host, Docker, local Python, CUDA, and W&B setup is documented in
+[INSTALL.md](INSTALL.md). Common failures are covered in
+[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md). Changes intended for the
+team repository should follow [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## 1. Enter the training directory
 
 ```bash
 cd experiments/training
 ```
 
-## 2. Edit parameters
+## 2. Install the environment
+
+Recommended reproducible route:
+
+```bash
+make docker-build
+```
+
+Alternative one-command local installation:
+
+```bash
+bash scripts/setup_env.sh
+source .venv/bin/activate
+```
+
+The setup command creates `.venv`, installs all pinned packages from
+`requirements.txt`, and verifies Python, package versions, CUDA, and the GPU.
+
+## 3. Edit parameters
 
 Edit `configs/training.yaml`. The main parameters are:
 
@@ -40,7 +63,7 @@ seed: 42
 Keep the class order and expected dataset counts unchanged unless the prepared
 dataset is intentionally replaced.
 
-## 3. Build the runtime image
+## 4. Build the runtime image
 
 ```bash
 docker build \
@@ -49,23 +72,20 @@ docker build \
   .
 ```
 
-## 4. Set paths and W&B
+Skip this step if `make docker-build` was already used.
+
+## 5. Set paths and W&B
 
 ```bash
-export DATASET_DIR="/absolute/path/to/prepared/dataset"
-export MODEL_DIR="/absolute/path/to/model_directory"
-export OUTPUT_DIR="/absolute/path/to/training_outputs"
-
-export WANDB_API_KEY="YOUR_WANDB_API_KEY"
-export WANDB_PROJECT="ml4u-ppe-yolo26"
-export WANDB_ENTITY="YOUR_WANDB_USERNAME_OR_TEAM"
-export WANDB_NAME="yolo26l_training_seed42"
-export WANDB_MODE="online"
+cp .env.example .env
+nano .env
 ```
 
-`MODEL_DIR` must contain `yolo26l.pt`. Never commit the W&B API key.
+Set `DATASET_DIR`, `MODEL_DIR`, `OUTPUT_DIR`, and the W&B values in `.env`.
+`MODEL_DIR` must contain `yolo26l.pt`. The launcher automatically reads `.env`.
+Never commit `.env` or the W&B API key.
 
-## 5. Validate the dataset
+## 6. Validate the dataset
 
 ```bash
 docker run --rm \
@@ -78,7 +98,7 @@ docker run --rm \
 
 Continue only when validation reports `PASS`.
 
-## 6. Start training in tmux
+## 7. Start training in tmux
 
 ```bash
 tmux new -s ppe-training
@@ -100,7 +120,7 @@ tail -f "$OUTPUT_DIR/training_console.log"
 nvidia-smi
 ```
 
-## 7. Resume from the latest checkpoint
+## 8. Resume from the latest checkpoint
 
 ```bash
 export RESUME_RELATIVE="yolo26l_training_seed42/weights/last.pt"

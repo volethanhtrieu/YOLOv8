@@ -2,6 +2,15 @@
 set -Eeuo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+ENV_FILE="${ENV_FILE:-$REPO_ROOT/.env}"
+if [[ -f "$ENV_FILE" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+  set +a
+fi
+
 IMAGE="${TRAIN_IMAGE:-ppe-yolo26-training:ultralytics8.4.104}"
 CONFIG_RELATIVE="${TRAIN_CONFIG:-configs/training.yaml}"
 CONTAINER_NAME="${CONTAINER_NAME:-ppe_yolo26_training}"

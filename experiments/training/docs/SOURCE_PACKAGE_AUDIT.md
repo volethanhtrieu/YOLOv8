@@ -3,7 +3,7 @@
 Source inspected read-only:
 
 ```text
-C:\Users\Admin\Downloads\training\training
+<local-download>/training
 ```
 
 The source folder was not modified.
@@ -20,8 +20,8 @@ The source folder was not modified.
    batch value. Changing `BATCH` at the top of that script does not prove that
    the resumed run used the new batch; the effective value must be read from the
    trainer output.
-5. `launch_main_docker.sh` hard-codes server mounts and mounts the user's
-   `/home/ml4u/.netrc` into the container.
+5. `launch_main_docker.sh` hard-codes server mounts and mounts a personal Git
+   credential file into the container.
 6. The Dockerfile depends on a private/local base image and a bundled wheel
    cache, so another user cannot reproduce it from public inputs alone.
 7. `requirements.txt` uses lower bounds for some dependencies rather than the
