@@ -1,0 +1,3 @@
+ultralytics==8.4.104
+wandb==0.29.0
+PyYAML==6.0.2

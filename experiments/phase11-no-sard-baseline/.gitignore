@@ -1,0 +1,72 @@
+# Secrets
+.env
+.env.*
+!.env.example
+.wandb.env
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local configuration
+configs/*.local.yaml
+configs/local.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Datasets
+data/
+dataset/
+datasets/
+images/
+labels/
+videos/
+source_datasets/
+
+# Models and exports
+models/
+weights/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.engine
+*.torchscript
+*.tflite
+*.mlpackage
+
+# Generated runs and caches
+outputs/
+runs/
+training_runs/
+wandb/
+runtime_cache/
+*.log
+events.out.tfevents.*
+
+# Build artifacts
+build/
+dist/
+.build_wheels/
+*.whl
+*.tar
+*.tar.gz
+*.zip

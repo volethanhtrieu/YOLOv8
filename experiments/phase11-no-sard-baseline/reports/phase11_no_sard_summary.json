@@ -1,0 +1,88 @@
+{
+  "generated_utc": "2026-08-27T10:05:48.259779+07:00",
+  "status": "PASS",
+  "seed": 42,
+  "candidate_count": 4844,
+  "source_counts": {
+    "CHVG4": 1698,
+    "PICTOR-yolo": 78,
+    "SH17": 68,
+    "SHEL4": 3000
+  },
+  "split_counts": {
+    "test": 486,
+    "train": 3874,
+    "val": 484
+  },
+  "source_split_counts": {
+    "CHVG4": {
+      "train": 1358,
+      "val": 169,
+      "test": 171
+    },
+    "SHEL4": {
+      "train": 2400,
+      "val": 300,
+      "test": 300
+    },
+    "SH17": {
+      "train": 54,
+      "val": 7,
+      "test": 7
+    },
+    "PICTOR-yolo": {
+      "train": 62,
+      "val": 8,
+      "test": 8
+    }
+  },
+  "class_counts": {
+    "person": 18798,
+    "head": 5890,
+    "helmet": 16366,
+    "vest": 3056
+  },
+  "image_count": 4844,
+  "label_count": 4844,
+  "pictor_empty_label_count": 78,
+  "sard_count": 0,
+  "group_leakage_count": 0,
+  "split_assignment_residuals": {
+    "SHEL4": {
+      "train": 0,
+      "val": 0,
+      "test": 0
+    },
+    "SH17": {
+      "train": 0,
+      "val": 0,
+      "test": 0
+    },
+    "PICTOR-yolo": {
+      "train": 0,
+      "val": 0,
+      "test": 0
+    }
+  },
+  "fail_fast_checks": {
+    "unique_4844": true,
+    "paired_labels_4844": true,
+    "source_counts_exact": true,
+    "sard_zero": true,
+    "pictor_empty_78": true,
+    "yolo_syntax": true,
+    "class_ids_0_3": true,
+    "normalized_finite": true,
+    "nonempty_splits": true,
+    "candidate_split_unique": true,
+    "group_isolation": true
+  },
+  "issues": [],
+  "sh17_cvat_zip": {
+    "path": "phase10c_sh17_68_corrected_cvat.zip",
+    "sha256": "14d26944ee3a3ac3b923a29b70e1c35eae7175145fd81f3b2e2d69b53d457956",
+    "backup_required": false
+  },
+  "semantic_review_repeated": false,
+  "training_test_split_policy": "test split excluded from training and epoch validation"
+}

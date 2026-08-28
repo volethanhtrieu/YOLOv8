@@ -1,0 +1,48 @@
+dataset:
+  data_yaml: null
+  manifest: null
+  expected_images: 4844
+  expected_splits:
+    train: 3874
+    val: 484
+    test: 486
+  expected_names:
+    0: person
+    1: head
+    2: helmet
+    3: vest
+
+training:
+  model: yolo26l.pt
+  epochs: 150
+  imgsz: 960
+  batch: 4
+  device: 0
+  workers: 8
+  patience: 30
+  seed: 42
+  deterministic: true
+  amp: true
+  cache: false
+  save_period: 10
+  output_root: outputs
+  run_name: yolo26l_phase11_no_sard_main_seed42
+
+wandb:
+  enabled: true
+  project: ml4u-ppe-yolo26
+  entity: null
+  mode: online
+  resume: never
+  tags:
+    - yolo26l
+    - phase11
+    - no-sard
+    - baseline
+    - seed42
+    - chvg4
+    - shel4
+    - sh17
+    - pictor-negatives
+
+resume_checkpoint: null
