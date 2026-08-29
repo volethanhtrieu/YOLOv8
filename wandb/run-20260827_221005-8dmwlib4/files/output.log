@@ -1,0 +1,12 @@
+Saved: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\outputs\test2_wandb.mp4
+Violation log: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\logs\test2_wandb.csv
+Frames: 287 | Average processing FPS: 4.21
+Violations in this run: 6
+ID | TRACK | TYPE       | STATUS   | STARTED AT
+------------------------------------------------------------------------------
+185 |     1 | no_helmet  | resolved | 2026-08-27T15:10:12.268+00:00
+186 |     3 | no_helmet  | resolved | 2026-08-27T15:10:12.317+00:00
+187 |     3 | no_vest    | resolved | 2026-08-27T15:10:12.357+00:00
+188 |     8 | no_helmet  | resolved | 2026-08-27T15:10:12.480+00:00
+189 |     9 | no_helmet  | resolved | 2026-08-27T15:10:12.527+00:00
+190 |     5 | no_helmet  | resolved | 2026-08-27T15:10:25.387+00:00

@@ -1,0 +1,59 @@
+{
+  "os":  "Windows-10-10.0.26200-SP0",
+  "python":  "CPython 3.10.20",
+  "startedAt":  "2026-08-29T14:44:24.106915Z",
+  "args":  [
+    "--source",
+    "video\\test4.mp4",
+    "--output",
+    "outputs\\test4_result.mp4",
+    "--log-output",
+    "logs\\test4_violations.csv",
+    "--camera-id",
+    "test",
+    "--profile",
+    "D_full_system",
+    "--wandb",
+    "--wandb-project",
+    "ppe-ablation",
+    "--wandb-run-name",
+    "test4-D-full",
+    "--wandb-log-every",
+    "1"
+  ],
+  "program":  "D:\\253\\PYTHON & ML\\PROJECT\\PPE_Ablation_Backend_YOLOv8x\\ppe_ablation_backend\\run_video.py",
+  "codePath":  "run_video.py",
+  "codePathLocal":  "run_video.py",
+  "git":  {
+    "remote":  "https://github.com/volethanhtrieu/YOLOv8.git",
+    "commit":  "268bd3acf7356ea851bb7d7ba12c13ea86932b80"
+  },
+  "email":  "kn020920006@gmail.com",
+  "root":  "D:\\253\\PYTHON & ML\\PROJECT\\PPE_Ablation_Backend_YOLOv8x\\ppe_ablation_backend",
+  "host":  "Khanh",
+  "executable":  "D:\\Anaconda3\\envs\\ppe_backend\\python.exe",
+  "cpu_count":  6,
+  "cpu_count_logical":  12,
+  "gpu":  "NVIDIA GeForce GTX 1650 Ti",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "1000068870144",
+      "used":  "178685648896"
+    }
+  },
+  "memory":  {
+    "total":  "16963534848"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce GTX 1650 Ti",
+      "memoryTotal":  "4294967296",
+      "cudaCores":  1024,
+      "architecture":  "Turing",
+      "uuid":  "GPU-56579061-7114-b1d8-d8d6-77a9983361e0"
+    }
+  ],
+  "cudaVersion":  "12.5",
+  "writerId":  "6n8qd61z8q9v25ci35mxf6ohbqad9vt4"
+}

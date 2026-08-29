@@ -1,0 +1,126 @@
+_wandb:
+    value:
+        cli_version: 0.29.0
+        e:
+            6anbnmg6c4sj868klrerng3hi548shd9:
+                args:
+                    - --source
+                    - video\test2.mp4
+                    - --output
+                    - outputs\test2_wandb.mp4
+                    - --log-output
+                    - logs\test2_wandb.csv
+                    - --camera-id
+                    - test2-wandb
+                    - --profile
+                    - D_full_system
+                    - --wandb
+                    - --wandb-project
+                    - ppe-ablation
+                codePath: run_video.py
+                codePathLocal: run_video.py
+                cpu_count: 6
+                cpu_count_logical: 12
+                cudaVersion: "12.5"
+                disk:
+                    /:
+                        total: "1000068870144"
+                        used: "177963495424"
+                email: kn020920006@gmail.com
+                executable: D:\Anaconda3\envs\ppe_backend\python.exe
+                git:
+                    commit: 218372564c8825bbd5654dbc9fa747be4664f25d
+                    remote: https://github.com/volethanhtrieu/YOLOv8.git
+                gpu: NVIDIA GeForce GTX 1650 Ti
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Turing
+                      cudaCores: 1024
+                      memoryTotal: "4294967296"
+                      name: NVIDIA GeForce GTX 1650 Ti
+                      uuid: GPU-56579061-7114-b1d8-d8d6-77a9983361e0
+                host: Khanh
+                memory:
+                    total: "16963534848"
+                os: Windows-10-10.0.26200-SP0
+                program: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\run_video.py
+                python: CPython 3.10.20
+                root: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend
+                startedAt: "2026-08-27T15:10:05.567471Z"
+                writerId: 6anbnmg6c4sj868klrerng3hi548shd9
+        m: []
+        python_version: 3.10.20
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 13
+                - 15
+                - 16
+                - 61
+                - 62
+                - 78
+            "4": 3.10.20
+            "5": 0.29.0
+            "8":
+                - 3
+            "12": 0.29.0
+            "13": windows-amd64
+api:
+    value:
+        host: 0.0.0.0
+        jpeg_quality: 85
+        port: 5000
+association:
+    value:
+        enabled: true
+        head_ratio: 0.35
+        min_item_inside_ratio: 0.3
+        mode: roi
+        torso_bottom_ratio: 0.85
+        torso_top_ratio: 0.2
+classes:
+    value:
+        head:
+            - head
+        helmet:
+            - helmet
+        person:
+            - person
+        vest:
+            - vest
+event:
+    value:
+        enabled: true
+        min_voting_samples: 5
+        mode: majority
+        recovery_seconds: 1
+        required_ppe:
+            - helmet
+            - vest
+        violation_seconds: 2
+        voting_ratio: 0.7
+        voting_window_seconds: 2.5
+model:
+    value:
+        confidence: 0.25
+        device: "0"
+        imgsz: 640
+        iou: 0.5
+        path: weights/best.pt
+profile:
+    value: D_full_system
+storage:
+    value:
+        database: data/detections.db
+        evidence_dir: evidence
+        save_evidence: true
+tracking:
+    value:
+        enabled: true
+        missing_timeout_seconds: 3
+        persist: true
+        tracker: bytetrack.yaml

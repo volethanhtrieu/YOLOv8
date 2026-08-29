@@ -13,6 +13,7 @@ import cv2
 from backend.config import load_config
 from backend.pipeline import PPEPipeline
 from backend.reporting import LOG_COLUMNS, export_violation_log, print_violation_list
+from backend.wandb_logger import WandbVideoLogger
 
 
 def parse_args() -> argparse.Namespace:
@@ -51,6 +52,17 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional W&B run name",
     )
+    parser.add_argument(
+        "--wandb-log-every",
+        type=int,
+        default=1,
+        help="Log W&B charts every N frames (default: 1)",
+    )
+    parser.add_argument(
+        "--wandb-no-video",
+        action="store_true",
+        help="Do not upload the annotated video to the W&B media panel",
+    )
     return parser.parse_args()
 
 
@@ -79,36 +91,22 @@ def start_wandb(
         name=run_name,
         group=source.stem,
         job_type="video-evaluation",
-        config=config.to_dict(),
+        config={
+            **config.to_dict(),
+            "source": str(source),
+            "output": str(Path(args.output)),
+            "camera_id": args.camera_id,
+            "wandb_log_every": max(1, args.wandb_log_every),
+        },
         tags=[args.profile, source.stem],
     )
     return wandb, run
 
 
-def log_wandb_frame(
-    run: Any,
-    payload: dict[str, Any],
-    frames: int,
-    average_fps: float,
-    video_time_seconds: float,
-) -> None:
-    counts = payload.get("counts", {})
-    metrics: dict[str, int | float] = {
-        "video/frame": frames,
-        "video/time_seconds": video_time_seconds,
-        "runtime/average_fps": average_fps,
-        "tracking/people_in_frame": int(counts.get("tracked_people", 0)),
-    }
-    if counts.get("no_helmet") is not None:
-        metrics["violations/no_helmet_in_frame"] = int(counts["no_helmet"])
-    if counts.get("no_vest") is not None:
-        metrics["violations/no_vest_in_frame"] = int(counts["no_vest"])
-    run.log(metrics, step=frames)
-
-
 def finish_wandb(
     wandb_module: Any,
     run: Any,
+    logger: WandbVideoLogger,
     args: argparse.Namespace,
     source: Path,
     output: Path,
@@ -116,6 +114,7 @@ def finish_wandb(
     rows: list[dict[str, Any]],
     frames: int,
     average_fps: float,
+    source_fps: float,
 ) -> str | None:
     event_counts = Counter(str(row["violation_type"]) for row in rows)
     run.summary.update(
@@ -126,16 +125,18 @@ def finish_wandb(
             "total_events": len(rows),
             "no_helmet_events": event_counts.get("no_helmet", 0),
             "no_vest_events": event_counts.get("no_vest", 0),
+            "unique_person_tracks": logger.unique_track_count,
+            "source_fps": source_fps,
             "source_video": str(source),
             "output_video": str(output.resolve()),
             "violation_log": str(log_path),
         }
     )
 
-    table = wandb_module.Table(columns=LOG_COLUMNS)
-    for row in rows:
-        table.add_data(*(row.get(column) for column in LOG_COLUMNS))
-    run.log({"violations/table": table})
+    logger.log_tracking_table()
+    logger.log_violation_table(rows, LOG_COLUMNS)
+    if not args.wandb_no_video:
+        logger.log_annotated_video(output, source_fps)
 
     artifact = wandb_module.Artifact(
         name=f"{args.profile}-{source.stem}-{run.id}",
@@ -164,6 +165,15 @@ def main() -> None:
     config = load_config(args.config, profile=args.profile)
     pipeline = PPEPipeline(config)
     wandb_module, wandb_run = start_wandb(args, config, source)
+    wandb_logger = (
+        WandbVideoLogger(
+            wandb_module,
+            wandb_run,
+            log_every=args.wandb_log_every,
+        )
+        if wandb_run
+        else None
+    )
     first_event_id = pipeline.repository.latest_event_id()
     capture = cv2.VideoCapture(str(source))
     if not capture.isOpened():
@@ -196,16 +206,13 @@ def main() -> None:
                 observed_at=last_observed_at,
             )
             writer.write(annotated)
-            if wandb_run and (
-                frames == 1 or frames % max(1, int(round(fps))) == 0
-            ):
+            if wandb_logger:
                 running_elapsed = max(time.perf_counter() - started, 1e-9)
-                log_wandb_frame(
-                    wandb_run,
+                wandb_logger.observe_frame(
                     payload,
                     frames,
-                    frames / running_elapsed,
                     last_observed_at,
+                    running_elapsed,
                 )
     except Exception:
         status = "failed"
@@ -239,9 +246,11 @@ def main() -> None:
     print(f"Frames: {frames} | Average processing FPS: {frames / elapsed:.2f}")
     print_violation_list(violation_rows)
     if wandb_run:
+        assert wandb_logger is not None
         wandb_url = finish_wandb(
             wandb_module,
             wandb_run,
+            wandb_logger,
             args,
             source,
             output,
@@ -249,6 +258,7 @@ def main() -> None:
             violation_rows,
             frames,
             frames / elapsed,
+            fps,
         )
         print(f"W&B run: {wandb_url}")
 

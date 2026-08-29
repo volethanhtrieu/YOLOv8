@@ -1,0 +1,25 @@
+Saved: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\outputs\test7_result.mp4
+Violation log: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\logs\test7.csv
+Frames: 804 | Average processing FPS: 4.69
+Violations in this run: 18
+ID | TRACK | TYPE       | STATUS   | STARTED AT
+------------------------------------------------------------------------------
+392 |     1 | no_vest    | resolved | 2026-08-29T15:11:35.314+00:00
+393 |     2 | no_vest    | resolved | 2026-08-29T15:11:35.364+00:00
+394 |     5 | no_vest    | resolved | 2026-08-29T15:11:35.396+00:00
+395 |     4 | no_helmet  | resolved | 2026-08-29T15:11:36.021+00:00
+396 |     4 | no_vest    | resolved | 2026-08-29T15:11:36.041+00:00
+397 |    17 | no_vest    | resolved | 2026-08-29T15:11:37.031+00:00
+398 |     2 | no_helmet  | resolved | 2026-08-29T15:11:49.224+00:00
+399 |   163 | no_vest    | resolved | 2026-08-29T15:12:25.265+00:00
+400 |   174 | no_helmet  | resolved | 2026-08-29T15:12:29.431+00:00
+401 |   174 | no_vest    | resolved | 2026-08-29T15:12:29.465+00:00
+402 |   269 | no_helmet  | resolved | 2026-08-29T15:12:59.811+00:00
+403 |   269 | no_vest    | resolved | 2026-08-29T15:12:59.836+00:00
+404 |   163 | no_helmet  | resolved | 2026-08-29T15:13:00.321+00:00
+405 |   308 | no_helmet  | resolved | 2026-08-29T15:13:16.590+00:00
+406 |   308 | no_vest    | resolved | 2026-08-29T15:13:16.632+00:00
+407 |   391 | no_vest    | resolved | 2026-08-29T15:14:07.922+00:00
+408 |   414 | no_helmet  | resolved | 2026-08-29T15:14:17.299+00:00
+409 |   414 | no_vest    | resolved | 2026-08-29T15:14:17.357+00:00
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.

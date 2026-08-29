@@ -4,7 +4,7 @@ Backend xử lý video để phát hiện vi phạm trang bị bảo hộ (PPE).
 `D_full_system` sử dụng pipeline:
 
 ```text
-YOLOv8x → ByteTrack → Association Head/Torso ROI
+YOLOv26l → ByteTrack → Association Head/Torso ROI
          → Event Engine 2 giây → SQLite + ảnh bằng chứng + log CSV
 ```
 
@@ -18,7 +18,7 @@ Hướng dẫn này dành cho Windows và có hai cách cài đặt:
 Đặt model tại:
 
 ```text
-weights\S-N0-coco-best.pt
+weights\best.pt
 ```
 
 Đặt video cần kiểm tra tại:
@@ -35,7 +35,7 @@ ppe_ablation_backend\
 ├── video\
 │   └── test.mp4
 ├── weights\
-│   └── S-N0-coco-best.pt
+│   └── best.pt
 ├── app.py
 ├── check_model.py
 ├── config.yaml
@@ -58,7 +58,7 @@ dir
 Phải nhìn thấy `run_video.py`, `config.yaml`, thư mục `backend`, `video` và
 `weights`.
 
-> Không dùng lệnh `cd weights\S-N0-coco-best.pt` vì `.pt` là file model, không
+> Không dùng lệnh `cd weights\best.pt` vì `.pt` là file model, không
 > phải thư mục.
 
 ## 2. Cách 1 — Cài đặt bằng Anaconda
@@ -163,7 +163,7 @@ cd /d "PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend"     # sửa thành đ�
 
 ### Trường hợp A — Model hiện tại có 3 class
 
-Model `S-N0-coco-best.pt` hiện tại có:
+Model `best.pt` hiện tại có:
 
 ```text
 {0: 'person', 1: 'head', 2: 'helmet'}
@@ -174,7 +174,7 @@ phải là:
 
 ```yaml
 model:
-  path: weights/S-N0-coco-best.pt
+  path: weights/best.pt
   imgsz: 416
   confidence: 0.25
   iou: 0.50
@@ -259,7 +259,7 @@ Kết quả chạy GPU phải có dạng:
 ```text
 CUDA available: True
 PyTorch CUDA: 11.8
-GPU: NVIDIA GeForce GTX 1650 Ti
+GPU: NVIDIA GeForce 
 ```
 
 Đồng thời kiểm tra trong `config.yaml`:
@@ -392,3 +392,33 @@ Các endpoint chính:
 | `GET` | `/api/events.csv` | Tải lịch sử sự kiện CSV |
 
 Nhấn `Ctrl + C` trong cửa sổ đang chạy server để dừng backend.
+
+## 10. Chạy theo dõi video bằng Weights & Biases (W&B)
+### 10.1. Cài đặt và đăng nhập
+
+Thực hiện một lần trong môi trường `ppe_backend`:
+
+```cmd
+python -m pip install "wandb>=0.18,<1.0"
+wandb login
+```
+### 10.2. Chạy riêng từng video
+Mỗi video phải dùng tên output, CSV, camera ID và W&B run name khác nhau.
+
+Video `test.mp4`:
+
+```cmd
+python run_video.py --source "video\test.mp4" --output "outputs\test_result.mp4" --log-output "logs\test_violations.csv" --camera-id test --profile D_full_system --wandb --wandb-project ppe-ablation (đổi để tạo ra ở project mới)  --wandb-run-name test-D-full (đổi để tạo ra ở project mới) --wandb-log-every 1
+```
+
+Video `test1.mp4`:
+
+```cmd
+python run_video.py --source "video\test1.mp4" --output "outputs\test1_result.mp4" --log-output "logs\test1_violations.csv" --camera-id test1 --profile D_full_system --wandb --wandb-project ppe-test1 --wandb-run-name test1-D-full --wandb-log-every 1
+```
+
+Video `test2.mp4`:
+
+```cmd
+python run_video.py --source "video\test2.mp4" --output "outputs\test2_result.mp4" --log-output "logs\test2_violations.csv" --camera-id test2 --profile D_full_system --wandb --wandb-project ppe-test2 --wandb-run-name test2-D-full --wandb-log-every 1
+```

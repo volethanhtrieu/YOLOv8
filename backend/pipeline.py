@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import time
-from collections import Counter
 from threading import Lock
 from typing import Any
 
@@ -64,6 +63,7 @@ class PPEPipeline:
         decisions = self.events.process(camera_id, people, observed_at)
         active_violations = self.events.active_violations(camera_id)
         counts = self._frame_counts(people, active_violations)
+        class_counts, class_confidence_means = self._class_metrics(detections)
         annotated = self._draw(
             frame.copy(),
             detections,
@@ -80,6 +80,8 @@ class PPEPipeline:
             "events": [self._decision_dict(item) for item in decisions],
             "counts": counts,
             "inference_ms": inference_ms,
+            "class_counts": class_counts,
+            "class_confidence_means": class_confidence_means,
         }
         with self._lock:
             self._stats.update(
@@ -92,7 +94,8 @@ class PPEPipeline:
                     "no_vest_in_frame": counts["no_vest"],
                     "events_created": self._stats["events_created"] + created,
                     "last_inference_ms": round(inference_ms, 2),
-                    "class_counts": dict(Counter(item.class_name for item in detections)),
+                    "class_counts": class_counts,
+                    "class_confidence_means": class_confidence_means,
                 }
             )
         return annotated, payload
@@ -212,6 +215,29 @@ class PPEPipeline:
             "no_helmet": count_violation("helmet"),
             "no_vest": count_violation("vest"),
         }
+
+    def _class_metrics(
+        self, detections: list[Detection]
+    ) -> tuple[dict[str, int], dict[str, float]]:
+        aliases = {
+            name: {
+                value.lower() for value in getattr(self.config.classes, name, [])
+            }
+            for name in ("person", "head", "helmet", "vest")
+        }
+        confidences: dict[str, list[float]] = {name: [] for name in aliases}
+        for detection in detections:
+            detected_name = detection.class_name.lower()
+            for canonical_name, configured_names in aliases.items():
+                if detected_name in configured_names:
+                    confidences[canonical_name].append(detection.confidence)
+                    break
+        counts = {name: len(values) for name, values in confidences.items()}
+        means = {
+            name: sum(values) / len(values) if values else 0.0
+            for name, values in confidences.items()
+        }
+        return counts, means
 
     @staticmethod
     def _draw_counter_panel(

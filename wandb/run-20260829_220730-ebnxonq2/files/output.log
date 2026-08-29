@@ -1,0 +1,17 @@
+Saved: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\outputs\test6_result.mp4
+Violation log: D:\253\PYTHON & ML\PROJECT\PPE_Ablation_Backend_YOLOv8x\ppe_ablation_backend\logs\test6.csv
+Frames: 447 | Average processing FPS: 5.27
+Violations in this run: 10
+ID | TRACK | TYPE       | STATUS   | STARTED AT
+------------------------------------------------------------------------------
+382 |     1 | no_vest    | resolved | 2026-08-29T15:07:50.337+00:00
+383 |     5 | no_vest    | resolved | 2026-08-29T15:07:50.466+00:00
+384 |    14 | no_vest    | resolved | 2026-08-29T15:07:51.140+00:00
+385 |    33 | no_helmet  | resolved | 2026-08-29T15:07:56.934+00:00
+386 |    33 | no_vest    | resolved | 2026-08-29T15:07:56.965+00:00
+387 |    14 | no_helmet  | resolved | 2026-08-29T15:08:08.767+00:00
+388 |    54 | no_vest    | resolved | 2026-08-29T15:08:15.022+00:00
+389 |    54 | no_helmet  | resolved | 2026-08-29T15:08:15.343+00:00
+390 |    92 | no_helmet  | resolved | 2026-08-29T15:08:40.208+00:00
+391 |    92 | no_vest    | resolved | 2026-08-29T15:08:40.289+00:00
+[34m[1mwandb[0m: [33mWARNING[0m `fps` argument does not affect the frame rate of the video when providing a file path or raw bytes.

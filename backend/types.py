@@ -44,6 +44,8 @@ class PersonPPE:
             "track_id": self.track_id,
             "person_confidence": self.person.confidence,
             "bbox": list(self.person.bbox),
+            "head": self.head is not None,
+            "head_confidence": self.head.confidence if self.head else None,
             "helmet": self.helmet is not None,
             "helmet_class": self.helmet.class_name if self.helmet else None,
             "helmet_confidence": self.helmet.confidence if self.helmet else None,
