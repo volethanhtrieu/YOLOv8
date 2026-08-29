@@ -2,7 +2,9 @@
 
 track_high_thresh: 0.40
 track_low_thresh: 0.10
-new_track_thresh: 0.70
+# A stricter birth threshold suppresses intermittent duplicate person boxes.
+# Existing tracks can still be matched using track_high/track_low thresholds.
+new_track_thresh: 0.80
 
 track_buffer: 60
 match_thresh: 0.90

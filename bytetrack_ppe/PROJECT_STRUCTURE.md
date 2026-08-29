@@ -30,6 +30,8 @@ dashboard.py
 | `evidence_service.py` | Tạo/cached evidence image Before/Open/After. |
 | `clip_service.py` | Tạo/cached event clip H.264 bằng FFmpeg. |
 | `human_review_store.py` | Lưu review riêng trong JSON và giữ history. |
+| `wandb_live_inference.py` | Chạy pipeline trong một W&B run để thu system telemetry, metric theo frame, video và artifact. |
+| `log_inference_to_wandb.py` | Tải một output run đã có lên W&B; không đại diện system telemetry lúc inference. |
 | `configs/bytetrack_ppe.yaml` | Ngưỡng ByteTrack đã chốt. |
 | `weights/candidates/CHVG4-best.pt` | Detector 4-class mặc định; bàn giao riêng, không lưu trong Git. |
 

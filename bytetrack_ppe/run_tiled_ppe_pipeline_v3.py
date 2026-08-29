@@ -30,9 +30,13 @@ DETECTIONS_CSV = OUTPUT_DIR / "detections.csv"
 IMGSZ = 960
 DETECT_CONF = 0.10
 DETECT_IOU = 0.70
+INFERENCE_DEVICE = "cpu"
 
-TILE_ROWS = 2
-TILE_COLS = 2
+# Full-frame inference is the safe default for low-resolution CCTV video.
+# Multi-tile inference remains available through the CLI for high-resolution
+# sources, where the user can validate that tile seams do not split people.
+TILE_ROWS = 1
+TILE_COLS = 1
 TILE_OVERLAP = 0.20
 MERGE_NMS_IOU = 0.55
 
@@ -47,6 +51,7 @@ EDGE_DUP_IOS = 0.65
 # Development threshold for PPE-to-person association.
 # Event logic is NOT applied in this script.
 PPE_ASSOC_CONF = 0.20
+DISPLAY_MODE = "clean"
 
 PERSON_CLASS_ID = 0
 HEAD_CLASS_ID = 1
@@ -230,6 +235,64 @@ def parse_args():
             "Optional detections.csv from another run. When set, "
             "YOLO inference is skipped and the exact merged detections "
             "are reused. This is intended for fair ablation."
+        ),
+    )
+
+    parser.add_argument(
+        "--conf",
+        type=float,
+        default=DETECT_CONF,
+        help="YOLO detection confidence threshold. Default: 0.10.",
+    )
+
+    parser.add_argument(
+        "--iou",
+        type=float,
+        default=DETECT_IOU,
+        help="YOLO NMS IoU threshold. Default: 0.70.",
+    )
+
+    parser.add_argument(
+        "--ppe-assoc-conf",
+        type=float,
+        default=PPE_ASSOC_CONF,
+        help="Minimum PPE confidence used by association. Default: 0.20.",
+    )
+
+    parser.add_argument(
+        "--tile-rows",
+        type=int,
+        default=TILE_ROWS,
+        help="Number of tile rows. Use 1 for low-resolution video.",
+    )
+
+    parser.add_argument(
+        "--tile-cols",
+        type=int,
+        default=TILE_COLS,
+        help="Number of tile columns. Use 1 for low-resolution video.",
+    )
+
+    parser.add_argument(
+        "--tile-overlap",
+        type=float,
+        default=TILE_OVERLAP,
+        help="Fractional overlap between adjacent tiles. Default: 0.20.",
+    )
+
+    parser.add_argument(
+        "--device",
+        default=INFERENCE_DEVICE,
+        help="Ultralytics inference device, for example cpu or 0.",
+    )
+
+    parser.add_argument(
+        "--display-mode",
+        choices=("clean", "debug"),
+        default=DISPLAY_MODE,
+        help=(
+            "clean draws associated PPE and short person labels; debug draws "
+            "all PPE detections and verbose labels. Default: clean."
         ),
     )
 
@@ -956,7 +1019,7 @@ def tiled_detect(model, frame):
             imgsz=IMGSZ,
             conf=DETECT_CONF,
             iou=DETECT_IOU,
-            device="cpu",
+            device=INFERENCE_DEVICE,
             verbose=False,
         )
 
@@ -974,7 +1037,7 @@ def tiled_detect(model, frame):
                 imgsz=IMGSZ,
                 conf=DETECT_CONF,
                 iou=DETECT_IOU,
-                device="cpu",
+                device=INFERENCE_DEVICE,
                 verbose=False,
             )[0]
 
@@ -1373,8 +1436,36 @@ def main():
     global FRAME_CSV
     global SUMMARY_JSON
     global DETECTIONS_CSV
+    global DETECT_CONF
+    global DETECT_IOU
+    global PPE_ASSOC_CONF
+    global TILE_ROWS
+    global TILE_COLS
+    global TILE_OVERLAP
+    global INFERENCE_DEVICE
+    global DISPLAY_MODE
 
     args = parse_args()
+
+    if not 0.0 <= args.conf <= 1.0:
+        raise ValueError("--conf must be between 0 and 1")
+    if not 0.0 <= args.iou <= 1.0:
+        raise ValueError("--iou must be between 0 and 1")
+    if not 0.0 <= args.ppe_assoc_conf <= 1.0:
+        raise ValueError("--ppe-assoc-conf must be between 0 and 1")
+    if args.tile_rows < 1 or args.tile_cols < 1:
+        raise ValueError("--tile-rows and --tile-cols must be at least 1")
+    if not 0.0 <= args.tile_overlap < 1.0:
+        raise ValueError("--tile-overlap must be in [0, 1)")
+
+    DETECT_CONF = float(args.conf)
+    DETECT_IOU = float(args.iou)
+    PPE_ASSOC_CONF = float(args.ppe_assoc_conf)
+    TILE_ROWS = int(args.tile_rows)
+    TILE_COLS = int(args.tile_cols)
+    TILE_OVERLAP = float(args.tile_overlap)
+    INFERENCE_DEVICE = str(args.device)
+    DISPLAY_MODE = str(args.display_mode)
 
     MODEL_PATH = args.model.resolve()
     VIDEO_PATH = args.video.resolve()
@@ -1911,31 +2002,32 @@ def main():
                 ),
             }
 
-            for row in detections:
-                class_id = int(
-                    row[5]
-                )
+            if DISPLAY_MODE == "debug":
+                for row in detections:
+                    class_id = int(
+                        row[5]
+                    )
 
-                if (
-                    class_id
-                    not in PPE_CLASS_IDS
-                    or row[4]
-                    < PPE_ASSOC_CONF
-                ):
-                    continue
-
-                draw_box(
-                    annotated,
-                    row[:4],
-                    class_colors[
+                    if (
                         class_id
-                    ],
-                    (
-                        f"{model.names[class_id]} "
-                        f"{row[4]:.2f}"
-                    ),
-                    1,
-                )
+                        not in PPE_CLASS_IDS
+                        or row[4]
+                        < PPE_ASSOC_CONF
+                    ):
+                        continue
+
+                    draw_box(
+                        annotated,
+                        row[:4],
+                        class_colors[
+                            class_id
+                        ],
+                        (
+                            f"{model.names[class_id]} "
+                            f"{row[4]:.2f}"
+                        ),
+                        1,
+                    )
 
             for track in tracks:
                 track_id = int(
@@ -1980,6 +2072,19 @@ def main():
                             class_id
                         ] += 1
 
+                        if DISPLAY_MODE == "clean":
+                            item = assoc[class_id]
+                            draw_box(
+                                annotated,
+                                item["box"],
+                                class_colors[class_id],
+                                (
+                                    f"{model.names[class_id]} "
+                                    f"{item['confidence']:.2f}"
+                                ),
+                                1,
+                            )
+
                 identity_label = (
                     f"ID {track_id}"
                     if tracker is not None
@@ -1990,11 +2095,15 @@ def main():
                 )
 
                 label = (
-                    f"{identity_label} "
-                    f"P:{person_conf:.2f} "
-                    f"Head:{format_conf(head_conf)} "
-                    f"Helmet:{format_conf(helmet_conf)} "
-                    f"Vest:{format_conf(vest_conf)}"
+                    (
+                        f"{identity_label} "
+                        f"P:{person_conf:.2f} "
+                        f"Head:{format_conf(head_conf)} "
+                        f"Helmet:{format_conf(helmet_conf)} "
+                        f"Vest:{format_conf(vest_conf)}"
+                    )
+                    if DISPLAY_MODE == "debug"
+                    else f"{identity_label} P:{person_conf:.2f}"
                 )
 
                 draw_box(
@@ -2125,29 +2234,40 @@ def main():
                 }
             )
 
-            cv2.putText(
-                annotated,
+            status_lines = (
                 (
-                    f"Frame {frame_index} "
+                    f"F={frame_index} "
                     f"Mode={args.tracking_mode} "
                     f"Tracks={len(tracks)} "
-                    f"Det={len(detections)} "
-                    f"TileInfer={detect_elapsed:.2f}s"
+                    f"Det={len(detections)}"
                 ),
                 (
-                    20,
-                    40,
+                    f"DetConf={DETECT_CONF:.2f} "
+                    f"PPEConf={PPE_ASSOC_CONF:.2f} "
+                    f"Tiles={TILE_ROWS}x{TILE_COLS} "
+                    f"Infer={detect_elapsed:.2f}s"
                 ),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.85,
-                (
-                    255,
-                    255,
-                    255,
-                ),
-                2,
-                cv2.LINE_AA,
             )
+
+            for line_index, status_text in enumerate(status_lines):
+                status_origin = (
+                    20,
+                    26 + 26 * line_index,
+                )
+                for color, thickness in (
+                    ((0, 0, 0), 5),
+                    ((255, 255, 255), 2),
+                ):
+                    cv2.putText(
+                        annotated,
+                        status_text,
+                        status_origin,
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.62,
+                        color,
+                        thickness,
+                        cv2.LINE_AA,
+                    )
 
             writer.write(
                 annotated
@@ -2338,6 +2458,8 @@ def main():
             "ppe_assoc_conf": (
                 PPE_ASSOC_CONF
             ),
+            "device": INFERENCE_DEVICE,
+            "display_mode": DISPLAY_MODE,
             "tracker": tracker_data,
         },
         "tiled_merge": {

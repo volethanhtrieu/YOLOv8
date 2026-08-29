@@ -109,6 +109,19 @@ def parse_args():
         ),
     )
 
+    parser.add_argument("--conf", type=float, default=0.10)
+    parser.add_argument("--iou", type=float, default=0.70)
+    parser.add_argument("--ppe-assoc-conf", type=float, default=0.20)
+    parser.add_argument("--tile-rows", type=int, default=1)
+    parser.add_argument("--tile-cols", type=int, default=1)
+    parser.add_argument("--tile-overlap", type=float, default=0.20)
+    parser.add_argument("--device", default="cpu")
+    parser.add_argument(
+        "--display-mode",
+        choices=("clean", "debug"),
+        default="clean",
+    )
+
     parser.add_argument(
         "--run-name",
         type=str,
@@ -359,6 +372,16 @@ def main():
         "max_frames": (
             args.max_frames
         ),
+        "inference_configuration": {
+            "conf": args.conf,
+            "iou": args.iou,
+            "ppe_assoc_conf": args.ppe_assoc_conf,
+            "tile_rows": args.tile_rows,
+            "tile_cols": args.tile_cols,
+            "tile_overlap": args.tile_overlap,
+            "device": args.device,
+            "display_mode": args.display_mode,
+        },
         "publish_requested": (
             args.publish
         ),
@@ -407,6 +430,22 @@ def main():
             str(args.max_frames),
             "--tracking-mode",
             args.tracking_mode,
+            "--conf",
+            str(args.conf),
+            "--iou",
+            str(args.iou),
+            "--ppe-assoc-conf",
+            str(args.ppe_assoc_conf),
+            "--tile-rows",
+            str(args.tile_rows),
+            "--tile-cols",
+            str(args.tile_cols),
+            "--tile-overlap",
+            str(args.tile_overlap),
+            "--device",
+            str(args.device),
+            "--display-mode",
+            args.display_mode,
         ]
 
         if detections_cache is not None:

@@ -476,6 +476,13 @@ Set-Location .\bytetrack_ppe
   --model ".\weights\candidates\CHVG4-best.pt" `
   --max-frames 60 `
   --tracking-mode bytetrack `
+  --conf 0.10 `
+  --iou 0.70 `
+  --ppe-assoc-conf 0.20 `
+  --tile-rows 1 `
+  --tile-cols 1 `
+  --device cpu `
+  --display-mode clean `
   --run-name chvg4_smoke_60f
 Set-Location ..
 ```
@@ -510,6 +517,13 @@ Set-Location .\bytetrack_ppe
   --model ".\weights\candidates\CHVG4-best.pt" `
   --max-frames 0 `
   --tracking-mode bytetrack `
+  --conf 0.10 `
+  --iou 0.70 `
+  --ppe-assoc-conf 0.20 `
+  --tile-rows 1 `
+  --tile-cols 1 `
+  --device cpu `
+  --display-mode clean `
   --run-name chvg4_full_video
 Set-Location ..
 ```

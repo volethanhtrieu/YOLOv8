@@ -386,6 +386,13 @@ CLI phù hợp khi không cần dashboard hoặc muốn tạo experiment có tê
 .\.venv\Scripts\python.exe .\run_pipeline_safe.py `
   --video ".\videos\test.mp4" `
   --max-frames 60 `
+  --conf 0.10 `
+  --iou 0.70 `
+  --ppe-assoc-conf 0.20 `
+  --tile-rows 1 `
+  --tile-cols 1 `
+  --device cpu `
+  --display-mode clean `
   --run-name "smoke_60f"
 ```
 
@@ -395,6 +402,13 @@ CLI phù hợp khi không cần dashboard hoặc muốn tạo experiment có tê
 .\.venv\Scripts\python.exe .\run_pipeline_safe.py `
   --video ".\videos\test.mp4" `
   --max-frames 0 `
+  --conf 0.10 `
+  --iou 0.70 `
+  --ppe-assoc-conf 0.20 `
+  --tile-rows 1 `
+  --tile-cols 1 `
+  --device cpu `
+  --display-mode clean `
   --run-name "full_video_v1"
 ```
 
@@ -451,6 +465,87 @@ thích sẽ bị từ chối.
 
 Chế độ `off` cấp một ID mới cho mỗi person detection ở mỗi frame. Đây chỉ là
 baseline ablation, không phải production mode và không thể `--publish`.
+
+### 10.7. Theo dõi inference bằng W&B
+
+Chạy các lệnh sau từ `F:\Github\YOLOv8\bytetrack_ppe`. Phải dùng đúng môi
+trường ảo trong thư mục này vì W&B được cài tại đây:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r ..\requirements-training.txt
+.\.venv\Scripts\python.exe -c "import wandb; print(wandb.__version__)"
+.\.venv\Scripts\wandb.exe login
+```
+
+Run live toàn video:
+
+```powershell
+.\.venv\Scripts\python.exe .\wandb_live_inference.py `
+  --video "C:\path\to\raw_video.mp4" `
+  --model ".\weights\candidates\CHVG4-best.pt" `
+  --tracker ".\configs\bytetrack_ppe.yaml" `
+  --max-frames 0 `
+  --conf 0.10 `
+  --iou 0.70 `
+  --ppe-assoc-conf 0.20 `
+  --tile-rows 1 `
+  --tile-cols 1 `
+  --tile-overlap 0.20 `
+  --device cpu `
+  --display-mode clean `
+  --entity "dfflaph-team" `
+  --project "chvg4-ppe-inference" `
+  --name "chvg4_live_unique_name"
+```
+
+Baseline hiện tại dùng detection confidence `0.10`, PPE association confidence
+`0.20`, Event Engine PPE confidence `0.20`, tile `1×1` và
+`new_track_thresh=0.80` trong `configs/bytetrack_ppe.yaml`. Video annotated cũng
+ghi `DetConf`, `PPEConf` và số tile ở dòng trạng thái phía trên.
+
+Quy tắc đầu vào:
+
+- dùng video gốc chưa có bbox;
+- không đưa `outputs/.../tiled_ppe_association.mp4` trở lại pipeline;
+- mỗi lần chạy phải dùng `--name` mới vì runner không ghi đè run cũ;
+- video độ phân giải thấp dùng `1×1`; chỉ bật nhiều tile cho video độ phân giải
+  cao sau khi đã kiểm tra hiện tượng person bị cắt ở đường ghép tile.
+
+Các metric tổng hợp như `performance/latency_mean_ms`,
+`performance/latency_p95_ms` và `performance/elapsed_s` chỉ có một giá trị cho
+cả run. Hiển thị chúng bằng Summary/Card/Bar là đúng; chúng không phải đường
+dao động theo frame. Dùng các metric sau để vẽ line chart:
+
+- `performance/latency_ms_in_frame`;
+- `runtime/average_fps`;
+- `tracking/people_in_frame` và `tracking/lost_tracks_in_frame`;
+- `violations/no_helmet_in_frame` và `violations/no_vest_in_frame`;
+- `detections/person_in_frame`, `head_in_frame`, `helmet_in_frame`,
+  `vest_in_frame`.
+
+Latency và `runtime/average_fps` ở trên đo riêng bước model inference. Dùng
+`performance/processing_fps` để đọc tốc độ end-to-end của cả pipeline. Hai
+metric `violations/*_in_frame` là số alert state đang ACTIVE/SUSPECTED hoặc
+RECOVERING của Event Engine, không phải phép đếm bbox thiếu PPE tức thời.
+
+`wandb_live_inference.py` khởi tạo W&B trước khi inference nên system monitor
+đo đúng CPU, RAM và network của lúc chạy. GPU chart chỉ xuất hiện khi PyTorch có
+CUDA và lệnh dùng `--device 0`; môi trường CPU-only không thể sinh GPU metric.
+Các history metric theo frame, bảng event và video được tải lên sau khi pipeline
+hoàn tất.
+
+Để tải một output đã có lên W&B mà không inference lại:
+
+```powershell
+.\.venv\Scripts\python.exe .\log_inference_to_wandb.py `
+  --run-dir ".\outputs\runs\full_video_v1" `
+  --entity "dfflaph-team" `
+  --project "chvg4-ppe-inference" `
+  --name "full_video_v1_posthoc"
+```
+
+Post-hoc upload giữ đúng metric/video/event của run cũ, nhưng system chart khi
+đó chỉ mô tả quá trình upload, không phải tài nguyên đã dùng lúc inference.
 
 ## 11. Cấu trúc và ý nghĩa đầu ra
 

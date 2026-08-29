@@ -21,6 +21,7 @@ dataset, checkpoint, association, CSV, API và dashboard.
 - Converter/validator: `scripts/data/`
 - Cấu hình dataset 4-class có thể commit: `configs/data_4class.yaml`
 - Fine-tune + W&B: `scripts/train/train_chvg4.py`
+- Inference + W&B: `bytetrack_ppe/wandb_live_inference.py` (xem mục 10.7 trong README backend)
 - Backend chính: `bytetrack_ppe/run_tiled_ppe_pipeline_v3.py`
 - Dataset sinh local: `data/processed/chvg4/` (không commit)
 - Model sinh local: `runs/chvg4/` và `bytetrack_ppe/weights/candidates/` (không commit)
