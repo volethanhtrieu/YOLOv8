@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>Workplace PPE Compliance Monitoring Using YOLOv8X, ByteTrack, an Association Module, and an Event Engine.</h1>
+<h1>Workplace PPE Compliance Monitoring Using YOLOv26l, ByteTrack, an Association Module, and an Event Engine.</h1>
 
 <p><strong>A reproducible computer-vision pipeline for tracking workers,<br>
 associating personal protective equipment, and generating reviewable safety events.</strong></p>
@@ -25,7 +25,7 @@ associating personal protective equipment, and generating reviewable safety even
 
 ## Overview
 
-Workplace PPE Compliance Monitoring Using YOLOv8X, ByteTrack, an Association Module, and an Event Engine is a modular pipeline for detecting workers, tracking them
+Workplace PPE Compliance Monitoring Using YOLOv26l, ByteTrack, an Association Module, and an Event Engine is a modular pipeline for detecting workers, tracking them
 with ByteTrack, assigning helmets and vests to the correct person, and exporting
 an annotated video with JSONL results. You can use the complete pipeline or jump
 directly into the module you want to study or extend.
