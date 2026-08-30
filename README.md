@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>YOLOv26l PPE Monitoring</h1>
+<h1>Workplace PPE Compliance Monitoring Using YOLOv8X, ByteTrack, an Association Module, and an Event Engine.</h1>
 
 <p><strong>A reproducible computer-vision pipeline for tracking workers,<br>
 associating personal protective equipment, and generating reviewable safety events.</strong></p>
