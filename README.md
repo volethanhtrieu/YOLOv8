@@ -8,7 +8,7 @@ associating personal protective equipment, and generating reviewable safety even
 <p>
   <img alt="Status: active development" src="https://img.shields.io/badge/status-active%20development-2563eb">
   <img alt="Python 3.10-3.12" src="https://img.shields.io/badge/Python-3.10--3.12-3776AB?logo=python&amp;logoColor=white">
-  <img alt="Ultralytics YOLOv26l" src="https://img.shields.io/badge/Ultralytics-YOLOv8-111F68?logo=ultralytics&amp;logoColor=white">
+  <img alt="Ultralytics YOLOv26l" src="https://img.shields.io/badge/Ultralytics-YOLOv26-111F68?logo=ultralytics&amp;logoColor=white">
   <img alt="ByteTrack" src="https://img.shields.io/badge/tracking-ByteTrack-0EA5E9">
 </p>
 
