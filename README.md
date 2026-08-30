@@ -25,7 +25,7 @@ associating personal protective equipment, and generating reviewable safety even
 
 ## Overview
 
-YOLOv26l PPE Monitoring is a modular pipeline for detecting workers, tracking them
+Workplace PPE Compliance Monitoring Using YOLOv8X, ByteTrack, an Association Module, and an Event Engine is a modular pipeline for detecting workers, tracking them
 with ByteTrack, assigning helmets and vests to the correct person, and exporting
 an annotated video with JSONL results. You can use the complete pipeline or jump
 directly into the module you want to study or extend.
