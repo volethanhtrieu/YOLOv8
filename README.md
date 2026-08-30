@@ -1,4 +1,4 @@
-# PPE Ablation Backend — YOLOv8x, ByteTrack và Event Engine
+# PPE Ablation Backend — YOLOv26l, ByteTrack và Event Engine
 
 Backend xử lý video để phát hiện vi phạm trang bị bảo hộ (PPE). Profile đầy đủ
 `D_full_system` sử dụng pipeline:
