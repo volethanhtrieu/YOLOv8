@@ -1,0 +1,14 @@
+{
+  "seed": 42,
+  "augmentation_fraction": 0.5,
+  "original_train_images": 3500,
+  "augmented_images": 1750,
+  "total_train_images": 5250,
+  "transforms": {
+    "gaussian_blur": 350,
+    "gaussian_noise": 350,
+    "brightness_contrast": 350,
+    "jpeg_compression": 350,
+    "motion_blur": 350
+  }
+}

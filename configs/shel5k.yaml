@@ -1,0 +1,10 @@
+path: data/processed/shel5k
+
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: person
+  1: head
+  2: helmet
